@@ -1,0 +1,73 @@
+@url = http://localhost:3000/api/v1
+###
+GET {{url}} HTTP/1.1
+
+###
+POST {{url}}/link/create HTTP/1.1
+Content-Type: application/json
+
+{
+    "url": "https://www.google.com/search?q=what+is+the+difference+btw+cuid+and+uuid&oq=what+is+the+difference+btw+cuid+and+uuid&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIJCAEQABgNGIAEMggIAhAAGA0YHjIICAMQABgNGB4yCAgEEAAYDRgeMggIBRAAGA0YHjIICAYQABgNGB4yCAgHEAAYFhgeMggICBAAGBYYHjIICAkQABgWGB7SAQkxMDQ5OGowajeoAgCwAgA&sourceid=chrome&source=chrome.ob&ie=UTF-8"
+}
+
+
+###
+POST {{url}}/auth/signup HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "t@gmail.com",
+    "password": "abc"
+}
+
+###
+POST {{url}}/auth/login HTTP/1.1
+Content-Type: application/json
+withCredentials: true
+
+{
+    "email": "t@gmail.com",
+    "password": "abc"
+}
+
+###
+POST {{url}}/expense HTTP/1.1
+Content-Type: application/json
+withCredentials: true
+
+{
+   "title": "Bike maintance",
+   "message": "regular maintance",
+   "category": "Annual",
+   "amount": 150
+}
+
+###
+GET {{url}}/expense?startTime=2026-06-01&endTime=2026-06-30T13:55:38.508Z HTTP/1.1
+Content-Type: application/json
+withCredentials: true
+
+# {
+#    "title": "Car maintance",
+#    "message": "regular maintance",
+#    "category": "Annual",
+#    "amount": 1500
+# }
+
+
+###
+PATCH {{url}}/expense/e6b1da7c-63b1-468d-a138-6058ce7aa92c HTTP/1.1
+Content-Type: application/json
+withCredentials: true
+
+{
+   "title": "Airplane maintance",
+   "message": "regular maintance",
+   "category": "Annual",
+   "amount": 14000
+}
+
+###
+DELETE {{url}}/expense/4d19e6c3-a634-411c-8743-96135f8fac7a HTTP/1.1
+Content-Type: application/json
+withCredentials: true
