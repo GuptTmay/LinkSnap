@@ -10,7 +10,6 @@ Content-Type: application/json
     "url": "https://www.google.com/search?q=what+is+the+difference+btw+cuid+and+uuid&oq=what+is+the+difference+btw+cuid+and+uuid&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIJCAEQABgNGIAEMggIAhAAGA0YHjIICAMQABgNGB4yCAgEEAAYDRgeMggIBRAAGA0YHjIICAYQABgNGB4yCAgHEAAYFhgeMggICBAAGBYYHjIICAkQABgWGB7SAQkxMDQ5OGowajeoAgCwAgA&sourceid=chrome&source=chrome.ob&ie=UTF-8"
 }
 
-
 ###
 POST {{url}}/auth/signup HTTP/1.1
 Content-Type: application/json

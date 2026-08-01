@@ -13,7 +13,7 @@ app.get('/health', (req, res) => {
   res.json({ message: 'API is working!' });
 });
 
-app.use( linkRouter);
+app.use(linkRouter);
 // app.use(`${API_PREFIX}/expense`, expenseRouter);
 
 app.listen(3000, () => {

@@ -2,11 +2,14 @@ import { Request, Response } from "express";
 import { nanoid } from "nanoid";
 import { linkRepository } from "../repositories/link";
 import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
+import { CreateLinkSchema, RedirectLinkSchema } from "../schema/link";
+import z, { ZodType } from "zod";
+import { BodyValidatedRequest, ParamsValidatedRequest } from "../types/validated-request";
 
 
 export class LinkController {
-  async createLink(req: Request, res: Response) {
-    const { url } = req.body;
+  async createLink(req: BodyValidatedRequest<typeof CreateLinkSchema>, res: Response) {
+    const { url } = req.validated.body;
 
     if (!url || typeof url !== "string") {
       return res.status(400).json({ error: "URL is required" });
@@ -37,8 +40,8 @@ export class LinkController {
       .json({ error: "Failed to generate a unique short URL" });
   }
 
-  async redirectToLongUrl(req: Request, res: Response) {
-    const { shorturl }  = req.params;
+  async redirectToLongUrl(req: ParamsValidatedRequest<typeof RedirectLinkSchema>, res: Response) {
+    const { shorturl }  = req.validated.params;
     try {
       const link = await linkRepository.incrementClicksAndGet(shorturl as string);
 
@@ -53,6 +56,7 @@ export class LinkController {
     }
   }
 }
+
 // Export a single instance of the LinkController class
 // This ensures that the same instance is used across the application, maintaining state if needed.
 // It also simplifies the import and usage of the controller in other parts of the application.
