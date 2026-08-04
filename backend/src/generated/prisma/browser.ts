@@ -22,3 +22,8 @@ export * from './enums';
  * 
  */
 export type Link = Prisma.LinkModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodType } from "zod";
+import { AppError } from "../errors/AppError";
 
 type ValidationSchemas = {
   body?: ZodType;
@@ -17,10 +18,11 @@ export function validate(schemas: ValidationSchemas) {
 
     for (const [key, value] of Object.entries(result)) {
       if (value && !value.success) {
-        return res.status(400).json({
-          error: `${key} validation failed`,
-          issues: value.error.issues,
-        });
+        throw new AppError(400, "VALIDATION_ERROR", `${key} validation failed`, value.error.issues);  
+        // return res.status(400).json({
+        //   error: `${key} validation failed`,
+        //   issues: value.error.issues,
+        // });
       }
     }
 
@@ -33,3 +35,4 @@ export function validate(schemas: ValidationSchemas) {
     next();
   };
 }
+

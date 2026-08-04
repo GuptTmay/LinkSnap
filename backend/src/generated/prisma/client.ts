@@ -46,3 +46,8 @@ export { Prisma }
  * 
  */
 export type Link = Prisma.LinkModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
