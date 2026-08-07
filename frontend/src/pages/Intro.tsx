@@ -1,4 +1,4 @@
-import AuthDialog from '@/components/AuthDialog';
+// import AuthDialog from '@/components/AuthDialog';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { logoutUser, me } from '@/lib/api';
@@ -40,8 +40,8 @@ const Intro = () => {
           </>
           :
           <>
-            <AuthDialog type="signup" />
-            <AuthDialog type="login" />
+            {/* <AuthDialog type="signup" />
+            <AuthDialog type="login" /> */}
           </>
         }
       </div>

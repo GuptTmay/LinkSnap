@@ -1,77 +1,54 @@
+import { googleClient } from './../lib/google';
 import { Response, Request } from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 
 import { userRepo } from "../repositories/user";
 import { salt_rounds, JWT } from "../config";
 import { failure, success } from "../helper/status";
 
 export default class AuthController {
-  /*
-    input: 
-    {
-      name:
-      email: 
-      password:
-    }
-  */
-  async signup(req: Request, res: Response) {
-    try {
-      const hashpass = await bcrypt.hash(req.body.password, salt_rounds);
+  async googleAuth(req: Request, res: Response) {
+    const { credential } = req.body;
+    
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
 
-      await userRepo.createUser(
-        req.body.name,
-        req.body.email,
-        hashpass
-      );
+    const payload = ticket.getPayload();
 
-      return res.status(201).json(success("User registered successfully", null));
-    }
-    catch (err) {
-      console.error(err);
-      if (userRepo.isUniqueConstraintError(err)) {
-        return res.status(400).json(failure("Email already exist", "EMAIL_ALREADY_EXISTS"));
-      }
-      return res.status(500).json(failure("Failed to register user", "INTERNAL_ERROR", err));
-    }
-  }
-
-  /*
-    input: {
-      email:  
-      password:
-    } 
-    return: {
-      token:  
-    }
-  */
-  async signin(req: Request, res: Response) {
-    try {
-      const user = await userRepo.getUser(req.body.email);
-
-      if (!user)
-        return res.status(401).json(failure("Invalid email or password.", "INVALID_CREDENTIALS"));
-
-      const isMatch = await bcrypt.compare(req.body.password, user.password);
-
-      if (!isMatch) return res.status(401).json(failure("Invalid email or password.", "INVALID_CREDENTIALS"));
-
-      const token = jwt.sign({ id: user.id }, JWT.SECRET_KEY, {
-        expiresIn: JWT.TOKEN_EXP,
+    if (!payload) {
+      return res.status(401).json({
+        success: false,
       });
-
-      return res.status(200).json(success("Authentication Successful", {token}));
-    } catch (error) {
-      return res.status(500).json(
-        failure(
-          "Signin failed! Something went wrong.",
-          "INTERNAL_ERROR",
-          error
-        )
-      );
     }
-  }
 
+    const email = payload.email!;
+    const name = payload.name!;
+    const avatar = payload.picture!;
+    const googleId = payload.sub;
+
+    let user = await userRepo.getUser(email);
+
+    if (!user) user = await userRepo.createUser(name, email, avatar, "google", googleId);
+
+    if (!user || !user.id) {
+      return res.status(500).json(failure("User Authentication Failed Retry later!", "INTERNAL_ERROR"));
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+      },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: "7d",
+      }
+    );
+    
+    return res.status(200).json(success("Authentication Successful", { token }));
+  }
+  
   // blacklist jwt token in redis
   // async logout(req: Request, res: Response) {}
 }

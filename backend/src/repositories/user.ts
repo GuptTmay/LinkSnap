@@ -3,15 +3,26 @@ import { prisma } from "../lib/prisma";
 
 
 class UserRepo {
-  async createUser(name: string, email: string, password: string): Promise<{ id: string }> {
+  async createUser(
+      name: string, 
+      email: string, 
+      avatar: string, 
+      provider: string,
+      providerId: string, 
+    ) {
     return await prisma.user.create({
       data: {
         name: name,
         email: email,
-        password: password,
+        avatar: avatar,
+        provider: provider,
+        providerId: providerId,
       },
       select: {
-        id: true
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
       }
     });
   }
@@ -26,7 +37,7 @@ class UserRepo {
         id: true,
         name: true,
         email: true,
-        password: true
+        avatar: true,
       }
     });
   }
@@ -41,6 +52,7 @@ class UserRepo {
         id: true,
         name: true,
         email: true,
+        avatar: true,
       }
     })
   }
