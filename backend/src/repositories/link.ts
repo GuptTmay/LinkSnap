@@ -2,9 +2,9 @@ import { Prisma } from "../generated/prisma/client";
 import { prisma } from "../lib/prisma"; 
 
 export class LinkRepository {
-  async create(shortUrl: string, longUrl: string): Promise<{shortUrl: string; longUrl: string}> {
+  async create(shortUrl: string, longUrl: string, userId: string): Promise<{shortUrl: string; longUrl: string}> {
     return await prisma.link.create({
-      data: { shortUrl, longUrl },
+      data: { shortUrl, longUrl, userId },
     });
   }
 

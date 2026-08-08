@@ -77,7 +77,8 @@ export const LinkScalarFieldEnum = {
   longUrl: 'longUrl',
   clicks: 'clicks',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  userId: 'userId'
 } as const
 
 export type LinkScalarFieldEnum = (typeof LinkScalarFieldEnum)[keyof typeof LinkScalarFieldEnum]

@@ -10,6 +10,7 @@ import { BodyValidatedRequest, ParamsValidatedRequest } from "../types/validated
 export class LinkController {
   async createLink(req: BodyValidatedRequest<typeof CreateLinkSchema>, res: Response) {
     const { url } = req.validated.body;
+    const userId  = req.user?.id; // Assuming the user ID is stored in req.user after authentication 
 
     if (!url || typeof url !== "string") {
       return res.status(400).json({ error: "URL is required" });
@@ -22,7 +23,7 @@ export class LinkController {
       const shortUrl = nanoid(LINK_ID_LENGTH);
 
       try {
-        await linkRepository.create(shortUrl, url);
+        await linkRepository.create(shortUrl, url, userId);
         return res.status(201).json({ shortUrl });
       } catch (err) {
         if (linkRepository.isUniqueConstraintError(err)) {
