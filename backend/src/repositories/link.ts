@@ -2,15 +2,24 @@ import { Prisma } from "../generated/prisma/client";
 import { prisma } from "../lib/prisma"; 
 
 export class LinkRepository {
-  async create(shortUrl: string, longUrl: string, userId: string): Promise<{shortUrl: string; longUrl: string}> {
+  async create(shortUrl: string, longUrl: string, userId: string) {
     return await prisma.link.create({
       data: { shortUrl, longUrl, userId },
+      select: { id: true, shortUrl: true, longUrl: true },
     });
   }
 
   async findByShortUrl(shortUrl: string): Promise<{shortUrl: string; longUrl: string} | null> {
     return await prisma.link.findUnique({
       where: { shortUrl },
+    });
+  }
+
+ // patch update link: longUrl, shortUrl
+  async updateLink(id: string, data: { shortUrl?: string; longUrl?: string }): Promise<{shortUrl: string; longUrl: string} | null> {
+    return await prisma.link.update({
+      where: { id },
+      data: data,
     });
   }
 

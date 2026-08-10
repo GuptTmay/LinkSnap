@@ -35,7 +35,7 @@ export function failure(
     message,
     error: {
       code,
-      details,
+      details: process.env.NODE_ENV !== "production" ? details : undefined, // Only include details in development mode
     },
   };
 }

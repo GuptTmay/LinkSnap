@@ -12,8 +12,8 @@ export function validate(schemas: ValidationSchemas) {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = {
       body: schemas.body?.safeParse(req.body),
-      query: schemas.query?.safeParse(req.query),
-      params: schemas.params?.safeParse(req.params),
+      query: schemas.query?.safeParse(req.query), // query parameters
+      params: schemas.params?.safeParse(req.params), // path parameters
     };
 
     for (const [key, value] of Object.entries(result)) {

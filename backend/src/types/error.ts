@@ -1,4 +1,5 @@
 export type ErrorCode =
+  | "NOT_FOUND"               // 404 — show a toast notification, redirect to a 404 page  
   | "INVALID_TOKEN"       // 401 — show a toast notification, redirect to login page
   | "UNAUTHORIZED"            // 401 — show a toast notification, redirect to login page
   | "VALIDATION_ERROR"        // 400 — highlight the specific input fields that failed validation

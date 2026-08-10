@@ -2,10 +2,23 @@ import { z } from "zod";
 import { LINK } from "../config";
 
 export const CreateLinkSchema = z.object({
-  url: z.url(),
+  longUrl: z.url(),
   title: z.string().min(1).max(100).optional(),
   description: z.string().max(500).optional(),
   tags: z.array(z.string()).optional(),
+});
+
+
+export const UpdateLinkParamsSchema = z.object({
+  linkId: z.uuid()
+});
+
+export const UpdateLinkBodySchema = z.object({
+  shortUrl: z
+    .string()
+    .min(LINK.MIN_LINK_ID_LENGTH)
+    .max(LINK.MAX_LINK_ID_LENGTH),
+  longUrl: z.url().optional(),
 });
 
 export const RedirectLinkSchema = z.object({
@@ -27,7 +40,7 @@ export const SignupSchema = z.object({
 export const GetExpenseByTimeSchema = z.object({
   startTime: z.coerce.date().default(new Date(0)),
   endTime: z.coerce.date().default(new Date()),
-   
+
 });
 
 

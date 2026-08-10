@@ -1,12 +1,22 @@
 @url = http://localhost:3000/api/v1
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI2MDU3NzAwLTgzMDgtNGFkZi1hNTYyLWM4NzEyNTM2MmRhMyIsImlhdCI6MTc4NTgzNTMyMSwiZXhwIjoxNzg2NDQwMTIxfQ.vD9bEmI576-996bzTyZxUvY_pkz2-zwo49b_hXMYRus
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI1YzlkMTYwLTY4YTItNDFlOC1hMjQzLTg1YjM3NmIxOWI0ZCIsImlhdCI6MTc4NjIxNTA3OSwiZXhwIjoxNzg2ODE5ODc5fQ.xcf2cN7yrWvneQdsO8jXUuH5niLeJXJMQONqX2WKEj8
 
 ###
-POST {{url}}/link/create HTTP/1.1
+POST {{url}}/link HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-    "url": "https://www.google.com"
+    "longUrl": "https://www.google.com"
+}
+
+###
+PATCH {{url}}/link/f524f7a8-868c-4b68-9cfb-c6fee223a4fc HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "shortUrl": "myshop"
 }
 
 

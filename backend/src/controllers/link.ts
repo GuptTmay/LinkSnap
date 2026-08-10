@@ -1,20 +1,17 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { nanoid } from "nanoid";
 import { linkRepository } from "../repositories/link";
 import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
-import { CreateLinkSchema, RedirectLinkSchema } from "../schema/link";
-import z, { ZodType } from "zod";
-import { BodyValidatedRequest, ParamsValidatedRequest } from "../types/validated-request";
+import { CreateLinkSchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
+import { BodyValidatedRequest, ParamsValidatedRequest, ValidatedRequest } from "../types/validated-request";
+import { failure, success } from "../helper/status";
+import { ZodType } from "zod";
 
 
 export class LinkController {
   async createLink(req: BodyValidatedRequest<typeof CreateLinkSchema>, res: Response) {
-    const { url } = req.validated.body;
-    const userId  = req.user?.id; // Assuming the user ID is stored in req.user after authentication 
-
-    if (!url || typeof url !== "string") {
-      return res.status(400).json({ error: "URL is required" });
-    }
+    const { longUrl } = req.validated.body;
+    const userId = req.user?.id; // Assuming the user ID is stored in req.user after authentication 
 
     // NOTE: no format/protocol validation here yet — worth adding
     // (e.g. reject anything that isn't http/https) before this goes to prod.
@@ -23,7 +20,7 @@ export class LinkController {
       const shortUrl = nanoid(LINK_ID_LENGTH);
 
       try {
-        await linkRepository.create(shortUrl, url, userId);
+        const data = await linkRepository.create(shortUrl, longUrl, userId);
         return res.status(201).json({ shortUrl });
       } catch (err) {
         if (linkRepository.isUniqueConstraintError(err)) {
@@ -31,29 +28,50 @@ export class LinkController {
           continue;
         }
 
-        console.error(err);
-        return res.status(500).json({ error: "Internal server error" });
+        return res
+          .status(500)
+          .json(failure("Failed to generate a unique short URL", "INTERNAL_ERROR"));
+
       }
     }
 
     return res
       .status(500)
-      .json({ error: "Failed to generate a unique short URL" });
+      .json(failure("Failed to generate a unique short URL", "INTERNAL_ERROR"));
+  }
+
+  async updateLink(req: ValidatedRequest<typeof UpdateLinkBodySchema, ZodType, typeof UpdateLinkParamsSchema>, res: Response) {
+    const data = req.validated.body;
+    const linkId = req.validated.params.linkId;
+
+    try {
+      const updatedLink = await linkRepository.updateLink(linkId, data);
+
+      if (!updatedLink) {
+        return res.status(404).json(failure("Link not found", "NOT_FOUND"));
+      }
+
+      return res.status(200).json(success("Link updated successfully", updatedLink));
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json(failure("Link Updation failed", "INTERNAL_ERROR"));
+    }
+
   }
 
   async redirectToLongUrl(req: ParamsValidatedRequest<typeof RedirectLinkSchema>, res: Response) {
-    const { shorturl }  = req.validated.params;
+    const { shorturl } = req.validated.params;
     try {
       const link = await linkRepository.incrementClicksAndGet(shorturl as string);
 
       if (!link) {
-        return res.status(404).json({ error: "Short URL not found" });
+        return res.status(404).json(failure("Page not found, You may have mistypes the address", "NOT_FOUND"));
       }
-      
+
       return res.redirect(302, link.longUrl);
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ error: "Internal server error" });
+      return res.status(500).json(failure("Internal server error", "INTERNAL_ERROR", err));
     }
   }
 }
