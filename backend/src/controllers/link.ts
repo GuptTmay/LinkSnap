@@ -43,9 +43,10 @@ export class LinkController {
   async updateLink(req: ValidatedRequest<typeof UpdateLinkBodySchema, ZodType, typeof UpdateLinkParamsSchema>, res: Response) {
     const data = req.validated.body;
     const linkId = req.validated.params.linkId;
+    const userId = req.user?.id;
 
     try {
-      const updatedLink = await linkRepository.updateLink(linkId, data);
+      const updatedLink = await linkRepository.updateLink(userId, linkId, data);
 
       if (!updatedLink) {
         return res.status(404).json(failure("Link not found", "NOT_FOUND"));
