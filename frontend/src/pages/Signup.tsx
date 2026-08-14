@@ -70,66 +70,6 @@ const Signup = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
-      {/* <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Create Account</CardTitle>
-        </CardHeader>
-
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              
-              <Input
-                id="email"
-                type="email"
-                placeholder="john@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-                required
-              />
-
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-
-              <Input
-                id="password"
-                type="password"
-                placeholder="********"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                required
-              />
-            </div>
-
-            {error && (
-              <p className="text-sm text-destructive">
-                {error}
-              </p>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? "Creating account..." : "Sign Up"}
-            </Button>
-
-            <p className="text-center text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <Link to="/signin" className="underline">
-                Signin 
-              </Link>
-            </p>
-          </form>
-        </CardContent>
-      </Card> */}
-
       <GoogleLogin
         onSuccess={async (credentialResponse) => {
           const res = await fetch("http://localhost:3000/api/v1/auth/google", {

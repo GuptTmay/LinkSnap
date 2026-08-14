@@ -1,7 +1,19 @@
 # Changelog
 All notable changes to this project are documented here.
-## [1.0.0] - 2026-07-31
+
+
+
+## [Unreleased]
+### Added 
+- Url Update Endpoint
+- QrCode Create Endpoint
+
+### Fixed 
+- Unauthorised Link Update
+
+## [1.0.0] - 2026-08-06
 ### Added
-- Authentication, dashboard, and CRUD for core entity.
-### Fixed
-- Timezone bug in the weekly report.
+- Project Setup 
+- Google Oauth authentication 
+- Url Shortening 
+- Url Redirection
