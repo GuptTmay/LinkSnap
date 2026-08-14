@@ -1,9 +1,10 @@
 # Changelog
 All notable changes to this project are documented here.
 
-
-
 ## [Unreleased]
+
+
+## [1.0.1] - 2026-08-14
 ### Added 
 - Url Update Endpoint
 - QrCode Create Endpoint
