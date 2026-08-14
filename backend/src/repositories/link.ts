@@ -23,6 +23,7 @@ export class LinkRepository {
     });
   }
 
+
   /**
    * Atomically increments clicks and returns the link in one query,
    * instead of findUnique + update (two round-trips).
@@ -45,11 +46,17 @@ export class LinkRepository {
     }
   }
 
-  isUniqueConstraintError(err: unknown): boolean {
-    return (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === "P2002"
-    );
+  // linkRepository
+  async findByIdAndUserId(linkId: string, userId: string) {
+    return await prisma.link.findFirst({
+      where: {
+        id: linkId,
+        userId,
+      },
+      select: {
+        id: true,
+      },
+    });
   }
 }
 

@@ -1,4 +1,6 @@
 export type ErrorCode =
+  |  "QR_CODE_ALREADY_EXISTS" // 409 — Show a toast notification.  
+  |  "LINK_NOT_FOUND"         // 404 — Show a toast notification.  
   | "NOT_FOUND"               // 404 — show a toast notification, redirect to a 404 page  
   | "INVALID_TOKEN"       // 401 — show a toast notification, redirect to login page
   | "UNAUTHORIZED"            // 401 — show a toast notification, redirect to login page

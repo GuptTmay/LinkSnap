@@ -56,14 +56,6 @@ class UserRepo {
       }
     })
   }
-
-  // Access the violated field via e.meta.target
-  isUniqueConstraintError(err: unknown): boolean {
-    return (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === "P2002"
-    );
-  }
 }
 
 export const userRepo = new UserRepo();

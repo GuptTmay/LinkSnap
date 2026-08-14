@@ -4,8 +4,9 @@ import { linkRepository } from "../repositories/link";
 import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
 import { CreateLinkSchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
 import { BodyValidatedRequest, ParamsValidatedRequest, ValidatedRequest } from "../types/validated-request";
-import { failure, success } from "../helper/status";
+import { failure, success } from "../utils/status";
 import { ZodType } from "zod";
+import { isUniqueConstraintError } from "../utils/prisma";
 
 
 export class LinkController {
@@ -23,7 +24,7 @@ export class LinkController {
         const data = await linkRepository.create(shortUrl, longUrl, userId);
         return res.status(201).json({ shortUrl });
       } catch (err) {
-        if (linkRepository.isUniqueConstraintError(err)) {
+        if (isUniqueConstraintError(err)) {
           // Collision, try another nanoid.
           continue;
         }

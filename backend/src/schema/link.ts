@@ -8,7 +8,6 @@ export const CreateLinkSchema = z.object({
   tags: z.array(z.string()).optional(),
 });
 
-
 export const UpdateLinkParamsSchema = z.object({
   linkId: z.uuid()
 });
@@ -36,13 +35,11 @@ export const SignupSchema = z.object({
   password: z.string().min(8).max(100),
 });
 
-
 export const GetExpenseByTimeSchema = z.object({
   startTime: z.coerce.date().default(new Date(0)),
   endTime: z.coerce.date().default(new Date()),
 
 });
-
 
 export const CreateExpenseSchema = z.object({
   title: z.string().min(1).max(100),
@@ -50,6 +47,7 @@ export const CreateExpenseSchema = z.object({
   category: z.string(),
   amount: z.float64().positive(),
 });
+
 
 export const UpdateExpenseSchema =
   CreateExpenseSchema.partial().refine(

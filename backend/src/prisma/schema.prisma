@@ -12,19 +12,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model Link {
-  id       String @id @default(uuid())
-  shortUrl String @unique
-  longUrl  String
-  clicks   Int    @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-}
-
 model User {
   id String @id @default(uuid())
 
@@ -33,10 +20,40 @@ model User {
   avatar String?
 
   provider   String
-  providerId String @unique
+  providerId String 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Links Link[]
+  links Link[]
+
+  @@unique([provider, providerId])
+}
+
+model Link {
+  id       String @id @default(uuid())
+  shortUrl String @unique
+  longUrl  String @db.VarChar(2048)
+  clicks   Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  qrCode QrCode? // optional — null if user never generated one 
+
+  @@index([userId])
+}
+
+model QrCode {
+  id     String @id @default(uuid())
+  linkId String @unique // enforces one-to-one: a link has at most one QR record
+  link   Link   @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  // downloads     Int   @default(0)
+  customization Json? // color, logo, size — open-ended for future features, no migration needed to add options
+
+  createdAt DateTime @default(now())
 }

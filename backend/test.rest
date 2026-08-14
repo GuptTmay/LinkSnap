@@ -19,6 +19,25 @@ Authorization: Bearer {{token}}
     "shortUrl": "myshop"
 }
 
+###
+POST {{url}}/link/f524f7a8-868c-4b68-9cfb-c6fee223a4fc/qrcode HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "customization": {
+        "color": "#000000",
+        "backgroundColor": "#ffffff",
+        "logo": "https://example.com/logo.png"
+    } 
+}
+
+
+
+
+
+
+
 
 ###
 POST {{url}}/auth/signup HTTP/1.1

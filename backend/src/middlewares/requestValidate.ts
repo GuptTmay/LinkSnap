@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodType } from "zod";
-import { failure } from "../helper/status";
+import { failure } from "../utils/status";
 
 type ValidationSchemas = {
   body?: ZodType;

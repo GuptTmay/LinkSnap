@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 import { userRepo } from "../repositories/user";
 import { salt_rounds, JWT } from "../config";
-import { failure, success } from "../helper/status";
+import { failure, success } from "../utils/status";
 
 export default class AuthController {
   async googleAuth(req: Request, res: Response) {
