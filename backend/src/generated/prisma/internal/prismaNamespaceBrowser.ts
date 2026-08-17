@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Link: 'Link',
-  QrCode: 'QrCode'
+  QrCode: 'QrCode',
+  LinkClick: 'LinkClick'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -90,7 +91,6 @@ export const LinkScalarFieldEnum = {
   id: 'id',
   shortUrl: 'shortUrl',
   longUrl: 'longUrl',
-  clicks: 'clicks',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId'
@@ -107,6 +107,22 @@ export const QrCodeScalarFieldEnum = {
 } as const
 
 export type QrCodeScalarFieldEnum = (typeof QrCodeScalarFieldEnum)[keyof typeof QrCodeScalarFieldEnum]
+
+
+export const LinkClickScalarFieldEnum = {
+  id: 'id',
+  linkId: 'linkId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  referrer: 'referrer',
+  os: 'os',
+  country: 'country',
+  device: 'device',
+  browser: 'browser',
+  createdAt: 'createdAt'
+} as const
+
+export type LinkClickScalarFieldEnum = (typeof LinkClickScalarFieldEnum)[keyof typeof LinkClickScalarFieldEnum]
 
 
 export const SortOrder = {

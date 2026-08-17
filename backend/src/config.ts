@@ -15,7 +15,7 @@ export const PORT = 3000;
 export const salt_rounds = 10; 
 
 export const JWT = {
-    SECRET_KEY: process.env.JWT_SECRET || "shhhhhhhhhhhh!",
+    SECRET_KEY: process.env.JWT_SECRET,
     TOKEN_EXP: 60 * 60 * 24 * 7, // 1 Week
 }
 

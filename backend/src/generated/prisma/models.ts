@@ -11,4 +11,5 @@
 export type * from './models/User'
 export type * from './models/Link'
 export type * from './models/QrCode'
+export type * from './models/LinkClick'
 export type * from './commonInputTypes'

@@ -1,12 +1,17 @@
+import { UAParser } from 'ua-parser-js';
 import { Response } from "express";
 import { nanoid } from "nanoid";
+import { ZodType } from "zod";
+
 import { linkRepository } from "../repositories/link";
 import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
 import { CreateLinkSchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
 import { BodyValidatedRequest, ParamsValidatedRequest, ValidatedRequest } from "../types/validated-request";
 import { failure, success } from "../utils/status";
-import { ZodType } from "zod";
-import { isUniqueConstraintError } from "../utils/prisma";
+import { isRecordNotFoundError, isUniqueConstraintError } from "../utils/prisma";
+import { analyticsRepo } from '../repositories/analytics';
+import { getCountryFromIp } from '../services/geolocation.service';
+import { sendNotFoundPage } from '../utils/errorView';
 
 
 export class LinkController {
@@ -64,14 +69,34 @@ export class LinkController {
   async redirectToLongUrl(req: ParamsValidatedRequest<typeof RedirectLinkSchema>, res: Response) {
     const { shorturl } = req.validated.params;
     try {
-      const link = await linkRepository.incrementClicksAndGet(shorturl as string);
+      const link = await linkRepository.findByShortUrl(shorturl);
 
-      if (!link) {
-        return res.status(404).json(failure("Page not found, You may have mistypes the address", "NOT_FOUND"));
-      }
+      const userAgent = req.headers["user-agent"];
+      const parser = new UAParser(userAgent);
+      const browser = parser.getBrowser().name ?? null;
+      const device = parser.getDevice().type ?? "desktop";
+      const os = parser.getOS().name ?? null;
+      let country = null; 
+      
+      if (req.ip) country = await getCountryFromIp(req.ip);
+
+      await analyticsRepo.create({
+        linkId: link.id,
+        ipAddress: req.ip,
+        userAgent,
+        referrer: req.headers.referer,
+        os,
+        country,   
+        browser,
+        device,
+      });
 
       return res.redirect(302, link.longUrl);
     } catch (err) {
+      if (isRecordNotFoundError(err)) {
+        return sendNotFoundPage(res); 
+        // return res.status(404).json(failure("Page not found, You’ve got the wrong address. \n You may have mis-typed the address", "NOT_FOUND"));
+      }
       console.error(err);
       return res.status(500).json(failure("Internal server error", "INTERNAL_ERROR", err));
     }

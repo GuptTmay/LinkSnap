@@ -9,8 +9,8 @@ export class LinkRepository {
     });
   }
 
-  async findByShortUrl(shortUrl: string): Promise<{ shortUrl: string; longUrl: string } | null> {
-    return await prisma.link.findUnique({
+  async findByShortUrl(shortUrl: string) {
+    return await prisma.link.findUniqueOrThrow({
       where: { shortUrl },
     });
   }
@@ -21,29 +21,6 @@ export class LinkRepository {
       where: { id: linkId, userId: userId },
       data: data,
     });
-  }
-
-
-  /**
-   * Atomically increments clicks and returns the link in one query,
-   * instead of findUnique + update (two round-trips).
-   * Returns null if the short URL doesn't exist.
-   */
-  async incrementClicksAndGet(shortUrl: string) {
-    try {
-      return await prisma.link.update({
-        where: { shortUrl },
-        data: { clicks: { increment: 1 } },
-      });
-    } catch (err) {
-      if (
-        err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === "P2025" // record not found
-      ) {
-        return null;
-      }
-      throw err;
-    }
   }
 
   // linkRepository

@@ -56,3 +56,8 @@ export type Link = Prisma.LinkModel
  * 
  */
 export type QrCode = Prisma.QrCodeModel
+/**
+ * Model LinkClick
+ * 
+ */
+export type LinkClick = Prisma.LinkClickModel

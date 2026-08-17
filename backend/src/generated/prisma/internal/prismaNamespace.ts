@@ -399,7 +399,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Link: 'Link',
-  QrCode: 'QrCode'
+  QrCode: 'QrCode',
+  LinkClick: 'LinkClick'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "link" | "qrCode"
+    modelProps: "user" | "link" | "qrCode" | "linkClick"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -641,6 +642,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LinkClick: {
+      payload: Prisma.$LinkClickPayload<ExtArgs>
+      fields: Prisma.LinkClickFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LinkClickFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LinkClickFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
+        }
+        findFirst: {
+          args: Prisma.LinkClickFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LinkClickFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
+        }
+        findMany: {
+          args: Prisma.LinkClickFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>[]
+        }
+        create: {
+          args: Prisma.LinkClickCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
+        }
+        createMany: {
+          args: Prisma.LinkClickCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LinkClickCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>[]
+        }
+        delete: {
+          args: Prisma.LinkClickDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
+        }
+        update: {
+          args: Prisma.LinkClickUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
+        }
+        deleteMany: {
+          args: Prisma.LinkClickDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LinkClickUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LinkClickUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>[]
+        }
+        upsert: {
+          args: Prisma.LinkClickUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
+        }
+        aggregate: {
+          args: Prisma.LinkClickAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLinkClick>
+        }
+        groupBy: {
+          args: Prisma.LinkClickGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LinkClickGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LinkClickCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LinkClickCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -698,7 +773,6 @@ export const LinkScalarFieldEnum = {
   id: 'id',
   shortUrl: 'shortUrl',
   longUrl: 'longUrl',
-  clicks: 'clicks',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId'
@@ -715,6 +789,22 @@ export const QrCodeScalarFieldEnum = {
 } as const
 
 export type QrCodeScalarFieldEnum = (typeof QrCodeScalarFieldEnum)[keyof typeof QrCodeScalarFieldEnum]
+
+
+export const LinkClickScalarFieldEnum = {
+  id: 'id',
+  linkId: 'linkId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  referrer: 'referrer',
+  os: 'os',
+  country: 'country',
+  device: 'device',
+  browser: 'browser',
+  createdAt: 'createdAt'
+} as const
+
+export type LinkClickScalarFieldEnum = (typeof LinkClickScalarFieldEnum)[keyof typeof LinkClickScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -793,20 +883,6 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -821,16 +897,16 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
- * Reference to a field of type 'Float'
+ * Reference to a field of type 'Int'
  */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
 /**
- * Reference to a field of type 'Float[]'
+ * Reference to a field of type 'Int[]'
  */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 /**
@@ -987,6 +1063,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   link?: Prisma.LinkOmit
   qrCode?: Prisma.QrCodeOmit
+  linkClick?: Prisma.LinkClickOmit
 }
 
 /* Types for Logging */

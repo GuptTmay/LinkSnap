@@ -20,7 +20,7 @@ model User {
   avatar String?
 
   provider   String
-  providerId String 
+  providerId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -34,7 +34,7 @@ model Link {
   id       String @id @default(uuid())
   shortUrl String @unique
   longUrl  String @db.VarChar(2048)
-  clicks   Int    @default(0)
+  // clicks   Int    @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -42,7 +42,8 @@ model Link {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  qrCode QrCode? // optional — null if user never generated one 
+  qrCode     QrCode? // optional — null if user never generated one 
+  linkClicks LinkClick[]
 
   @@index([userId])
 }
@@ -56,4 +57,23 @@ model QrCode {
   customization Json? // color, logo, size — open-ended for future features, no migration needed to add options
 
   createdAt DateTime @default(now())
+}
+
+model LinkClick {
+  id     String @id @default(uuid())
+  linkId String
+  link   Link   @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  ipAddress String?
+  userAgent String?
+  referrer  String?
+
+  os      String?
+  country String?
+  device  String?
+  browser String?
+
+  createdAt DateTime @default(now())
+
+  @@index([linkId, createdAt])
 }
