@@ -3,8 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import Intro from "@/pages/Intro";
 import Home from "@/pages/Home";
 import { ThemeProvider } from '@/components/theme-provider';
-import Signin from './pages/Signin';
-import Signup from './pages/Signup';
+import Auth from './pages/Auth';
 
 function App() {
   return (
@@ -13,9 +12,7 @@ function App() {
       <Toaster position='bottom-right'/>
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<Intro />} /> */}
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/home" element={<Home />} />
         </Routes>
       </BrowserRouter>

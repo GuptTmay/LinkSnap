@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { googleOauth } from "@/api/auth.api";
 
-const Signup = () => {
+const Auth = () => {
   const navigate = useNavigate();
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
@@ -13,7 +13,7 @@ const Signup = () => {
           // console.log(body);
           // console.log("success");
           localStorage.setItem("token", body.token);
-          navigate('/');
+          navigate('/home');
         }}
         onError={() => {
           console.log("Login Failed");
@@ -23,4 +23,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Auth;
