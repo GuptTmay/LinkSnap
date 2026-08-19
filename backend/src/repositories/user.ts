@@ -4,12 +4,12 @@ import { prisma } from "../lib/prisma";
 
 class UserRepo {
   async createUser(
-      name: string, 
-      email: string, 
-      avatar: string, 
-      provider: string,
-      providerId: string, 
-    ) {
+    name: string,
+    email: string,
+    avatar: string,
+    provider: string,
+    providerId: string,
+  ) {
     return await prisma.user.create({
       data: {
         name: name,
@@ -28,8 +28,8 @@ class UserRepo {
   }
 
   // Get single user info
-  async getUser(email: string) {
-    return await prisma.user.findUnique({
+  async getUserByEmail(email: string) {
+    return await prisma.user.findUniqueOrThrow({
       where: {
         email
       },
@@ -42,10 +42,22 @@ class UserRepo {
     });
   }
 
+  async getUserById(id: string) {
+    return await prisma.user.findUniqueOrThrow({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+      },
+    });
+  }
+
   async updateUser(id: string, data: Prisma.UserUpdateInput) {
     return await prisma.user.update({
       where: {
-        id 
+        id
       },
       data,
       select: {

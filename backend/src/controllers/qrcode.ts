@@ -4,12 +4,11 @@ import { failure, success } from "../utils/status";
 import { ValidatedRequest } from "../types/validated-request";
 import { CreateQrCodeBodySchema, CreateQrCodeParamsSchema } from "../schema/qrcode";
 import { ZodType } from "zod";
-import { linkRepository } from "../repositories/link";
+import { linksRepository } from "../repositories/links";
 import { qrCodeRepo } from "../repositories/qrcode";
 import { isUniqueConstraintError } from "../utils/prisma";
 
 export default class QrCodeController {
-  // Controller
   async createQrCode(
     req: ValidatedRequest<typeof CreateQrCodeBodySchema, ZodType, typeof CreateQrCodeParamsSchema>,
     res: Response
@@ -20,7 +19,7 @@ export default class QrCodeController {
 
     try {
       // Check whether link exists and belongs to user
-      const link = await linkRepository.findByIdAndUserId(linkId, userId);
+      const link = await linksRepository.findByIdAndUserId(linkId, userId);
 
       if (!link) {
         return res
@@ -47,6 +46,26 @@ export default class QrCodeController {
       return res
         .status(500)
         .json(failure("Failed to create QR code", "INTERNAL_ERROR"));
+    }
+  }
+
+  // Get all user qr codes.
+  async getQrCodes(req: ValidatedRequest, res: Response) {
+    try {
+      const userId = req.user?.id;
+      const qrCodes = await linksRepository.findLinksWithQrCodes(userId);
+
+      return res.status(200).json(
+        success("QR codes fetched successfully", {
+          qrCodes,
+        })
+      );
+    } catch (err) {
+      console.error("Error fetching QR codes:", err);
+
+      return res
+        .status(500)
+        .json(failure("Failed to fetch QR codes", "INTERNAL_ERROR"));
     }
   }
 }

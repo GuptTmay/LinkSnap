@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { link } from "../controllers/link";
+import { link } from "../controllers/links";
 import { validate } from "../middlewares/requestValidate";
 import {RedirectLinkSchema } from "../schema/link";
 import { ParamsValidatedRequest } from "../types/validated-request";

@@ -1,5 +1,6 @@
 @url = http://localhost:3000/api/v1
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI1YzlkMTYwLTY4YTItNDFlOC1hMjQzLTg1YjM3NmIxOWI0ZCIsImlhdCI6MTc4NjIxNTA3OSwiZXhwIjoxNzg2ODE5ODc5fQ.xcf2cN7yrWvneQdsO8jXUuH5niLeJXJMQONqX2WKEj8
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI1YzlkMTYwLTY4YTItNDFlOC1hMjQzLTg1YjM3NmIxOWI0ZCIsImlhdCI6MTc4NzA0Mzg1MCwiZXhwIjoxNzg3NjQ4NjUwfQ.4HqmoM9l7pDoqc5eKiZGXaocO8cAWKlAh_OSwvBKmiQ 
+
 
 ###
 POST {{url}}/link HTTP/1.1
@@ -7,7 +8,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "longUrl": "https://www.google.com"
+    "longUrl": "https://chatgpt.com/c/6a841e33-c3c0-83ee-80ec-08840ab9f99e"
 }
 
 ###

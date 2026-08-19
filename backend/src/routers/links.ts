@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { link } from "../controllers/link";
+import { links } from "../controllers/links";
 import { qrCodeController } from "../controllers/qrcode";
 import { validate } from "../middlewares/requestValidate";
 import { CreateLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
@@ -14,7 +14,7 @@ router.post(
   `/`,
   requireAuth,
   validate({ body: CreateLinkSchema }),
-  (req, res) => link.createLink(req as BodyValidatedRequest<typeof CreateLinkSchema>, res)
+  (req, res) => links.createLink(req as BodyValidatedRequest<typeof CreateLinkSchema>, res)
 );
 
 router.patch(
@@ -25,7 +25,7 @@ router.patch(
     params: UpdateLinkParamsSchema
   }),
   (req, res) =>
-    link.updateLink(req as ValidatedRequest<typeof UpdateLinkBodySchema, ZodType, typeof UpdateLinkParamsSchema>, res)
+    links.updateLink(req as ValidatedRequest<typeof UpdateLinkBodySchema, ZodType, typeof UpdateLinkParamsSchema>, res)
 );
 
 router.post(
@@ -35,6 +35,18 @@ router.post(
   (req, res) => qrCodeController.createQrCode(req as ValidatedRequest<typeof CreateQrCodeBodySchema, ZodType, typeof CreateQrCodeParamsSchema>, res)
 );
 
+// get all user links
+router.get(
+  "/links",
+  requireAuth,
+  (req, res) => links.getLinks(req as ValidatedRequest, res)
+);
 
+// Get all links with qrcodes.
+router.get(
+  `/qrcode`,
+  requireAuth,
+  (req, res) => qrCodeController.getQrCodes(req as ValidatedRequest, res)
+);
 
 export default router;

@@ -3,13 +3,14 @@ import { Response, Request } from "express";
 import jwt from "jsonwebtoken";
 
 import { userRepo } from "../repositories/user";
-import { salt_rounds, JWT } from "../config";
 import { failure, success } from "../utils/status";
+import { JWT } from '../config';
+import { isRecordNotFoundError } from '../utils/prisma';
 
 export default class AuthController {
   async googleAuth(req: Request, res: Response) {
     const { credential } = req.body;
-    
+
     const ticket = await googleClient.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -28,7 +29,7 @@ export default class AuthController {
     const avatar = payload.picture!;
     const googleId = payload.sub;
 
-    let user = await userRepo.getUser(email);
+    let user = await userRepo.getUserByEmail(email);
 
     if (!user) user = await userRepo.createUser(name, email, avatar, "google", googleId);
 
@@ -45,12 +46,52 @@ export default class AuthController {
         expiresIn: "7d",
       }
     );
-    
-    return res.status(200).json(success("Authentication Successful", { token }));
+
+    // Injecting token into cookie payload headers block
+    res.cookie('token', token, {
+      httpOnly: true, // Blocks client scripts execution layer access (Stops XSS)
+      secure: true,   // Mandates HTTPS delivery pipelines only
+      sameSite: 'strict', // Defense layer guarding from cross-site request forgeries (CSRF)
+      maxAge: JWT.TOKEN_EXP // token age 
+    });
+
+    return res.status(200).json(success("Authentication Successful", {}));
   }
-  
-  // blacklist jwt token in redis
-  // async logout(req: Request, res: Response) {}
+
+  async me(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id;
+      const user = await userRepo.getUserById(userId);
+
+      return res.status(200).json(
+        success("User fetched successfully", {
+          user,
+        })
+      );
+    } catch (err) {
+      if (isRecordNotFoundError(err)) {
+        return res
+          .status(404)
+          .json(failure("User not found", "NOT_FOUND"));
+      }
+      console.error(err);
+
+      return res
+        .status(500)
+        .json(failure("Internal server error", "INTERNAL_ERROR"));
+    }
+  }
+
+  // Todo: blacklist jwt token in redis
+  async logout(req: Request, res: Response) {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict'
+    });
+
+    return res.status(200).json(success("Cookie successfully cleared.", {}));
+  };
 }
 
 export const authController = new AuthController();

@@ -3,7 +3,7 @@ import { Response } from "express";
 import { nanoid } from "nanoid";
 import { ZodType } from "zod";
 
-import { linkRepository } from "../repositories/link";
+import { linksRepository } from "../repositories/links";
 import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
 import { CreateLinkSchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
 import { BodyValidatedRequest, ParamsValidatedRequest, ValidatedRequest } from "../types/validated-request";
@@ -14,7 +14,7 @@ import { getCountryFromIp } from '../services/geolocation.service';
 import { sendNotFoundPage } from '../utils/errorView';
 
 
-export class LinkController {
+export class LinksController {
   async createLink(req: BodyValidatedRequest<typeof CreateLinkSchema>, res: Response) {
     const { longUrl } = req.validated.body;
     const userId = req.user?.id; // Assuming the user ID is stored in req.user after authentication 
@@ -26,8 +26,8 @@ export class LinkController {
       const shortUrl = nanoid(LINK_ID_LENGTH);
 
       try {
-        const data = await linkRepository.create(shortUrl, longUrl, userId);
-        return res.status(201).json({ shortUrl });
+        const data = await linksRepository.create(shortUrl, longUrl, userId);
+        return res.status(201).json(success("Link created", { id: data.id, shortUrl }));
       } catch (err) {
         if (isUniqueConstraintError(err)) {
           // Collision, try another nanoid.
@@ -52,7 +52,7 @@ export class LinkController {
     const userId = req.user?.id;
 
     try {
-      const updatedLink = await linkRepository.updateLink(userId, linkId, data);
+      const updatedLink = await linksRepository.updateLink(userId, linkId, data);
 
       if (!updatedLink) {
         return res.status(404).json(failure("Link not found", "NOT_FOUND"));
@@ -69,15 +69,15 @@ export class LinkController {
   async redirectToLongUrl(req: ParamsValidatedRequest<typeof RedirectLinkSchema>, res: Response) {
     const { shorturl } = req.validated.params;
     try {
-      const link = await linkRepository.findByShortUrl(shorturl);
+      const link = await linksRepository.findByShortUrl(shorturl);
 
       const userAgent = req.headers["user-agent"];
       const parser = new UAParser(userAgent);
       const browser = parser.getBrowser().name ?? null;
       const device = parser.getDevice().type ?? "desktop";
       const os = parser.getOS().name ?? null;
-      let country = null; 
-      
+      let country = null;
+
       if (req.ip) country = await getCountryFromIp(req.ip);
 
       await analyticsRepo.create({
@@ -86,7 +86,7 @@ export class LinkController {
         userAgent,
         referrer: req.headers.referer,
         os,
-        country,   
+        country,
         browser,
         device,
       });
@@ -94,11 +94,31 @@ export class LinkController {
       return res.redirect(302, link.longUrl);
     } catch (err) {
       if (isRecordNotFoundError(err)) {
-        return sendNotFoundPage(res); 
+        return sendNotFoundPage(res);
         // return res.status(404).json(failure("Page not found, You’ve got the wrong address. \n You may have mis-typed the address", "NOT_FOUND"));
       }
       console.error(err);
       return res.status(500).json(failure("Internal server error", "INTERNAL_ERROR", err));
+    }
+  }
+
+  // Get all user links
+  async getLinks(req: ValidatedRequest, res: Response) {
+    try {
+      const userId = req.user?.id;
+      const links = await linksRepository.findByUserId(userId);
+
+      return res.status(200).json(
+        success("Links fetched successfully", {
+          links,
+        })
+      );
+    } catch (err) {
+      console.error("Error fetching user links:", err);
+
+      return res
+        .status(500)
+        .json(failure("Failed to fetch links", "INTERNAL_ERROR"));
     }
   }
 }
@@ -106,4 +126,4 @@ export class LinkController {
 // Export a single instance of the LinkController class
 // This ensures that the same instance is used across the application, maintaining state if needed.
 // It also simplifies the import and usage of the controller in other parts of the application.
-export const link = new LinkController();
+export const links = new LinksController();
