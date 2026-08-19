@@ -4,14 +4,36 @@ const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const API_PREFIX = "/api/v1";
 const fullBaseUrl = `${BASE_URL}${API_PREFIX}`;
 
+// export const createLink = async (longUrl: string) => {
+//   try {
+//     const token = localStorage.getItem("token");
+
+//     const res = await fetch(`${fullBaseUrl}/link`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify({
+//         longUrl,
+//       }),
+//     });
+
+//     return res;
+//   } catch (error) {
+//     console.error("Error in createLink:", error);
+//   }
+// };
+
+
+
 export const testApi = async () => {
   try {
     const res = await fetch(`${BASE_URL}/test`, {
       method: 'GET',
       credentials: 'include',
     });
-
-    console.log("testApi response:", await res.json());
+    return res;
   } catch (error) {
     console.error("Error in testApi:", error);
   }
