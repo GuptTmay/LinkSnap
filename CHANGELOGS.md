@@ -3,6 +3,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 - Added Analytics  
+- Setup Frontend
 
 ## [1.0.1] - 2026-08-14
 ### Added 

@@ -3,9 +3,16 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import AuthPage from "@/pages/Auth";
 import Home from "@/pages/Home";
+import LinksCreatePage from "@/pages/LinksCreatePage";
+import QrCodesCreatePage from "@/pages/QrCodesCreatePage";
+import LinksListPage from "@/pages/LinksListPage";
+import QrCodesListPage from "@/pages/QrCodesListPage";
+import AnalyticsPage from "@/pages/AnalyticsPage";
+import SettingsPage from "@/pages/SettingsPage";
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
+import { AppLayout } from '@/components/layout/AppLayout';
 
 function App() {
   return (
@@ -14,13 +21,78 @@ function App() {
         <Toaster position="bottom-right" />
         <BrowserRouter>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
+
+            {/* Protected App Routes with AppLayout */}
             <Route
               path="/home"
               element={
                 <ProtectedRoute>
-                  <Home />
+                  <AppLayout>
+                    <Home />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/links"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <LinksListPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/links/create"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <LinksCreatePage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/qrcodes"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <QrCodesListPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/qrcodes/create"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <QrCodesCreatePage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <AnalyticsPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <SettingsPage />
+                  </AppLayout>
                 </ProtectedRoute>
               }
             />
