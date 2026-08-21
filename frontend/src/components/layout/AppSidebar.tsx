@@ -44,14 +44,14 @@ export const AppSidebar: React.FC = () => {
   return (
     <>
       <Sidebar collapsible="icon" className="border-r border-border">
-        <SidebarHeader className="p-4 flex flex-col gap-4">
+        <SidebarHeader className="p-4 flex items-center flex-col gap-4">
           {/* Logo Branding */}
           <Link
             to="/home"
-            className="flex items-center gap-1 text-xl font-extrabold tracking-tight overflow-hidden whitespace-nowrap"
+            className="flex items-center text-xl font-extrabold tracking-tight overflow-hidden whitespace-nowrap"
           >
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
-              Link
+            <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
+              {isCollapsed ? "L" : "Link"}
             </span>
             {!isCollapsed && <span className="text-foreground">Snap</span>}
           </Link>
@@ -59,9 +59,8 @@ export const AppSidebar: React.FC = () => {
           {/* Create Button */}
           <Button
             onClick={() => setCreateDialogOpen(true)}
-            className={`bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 transition-all ${
-              isCollapsed ? "h-9 w-9 p-0" : "w-full h-10 px-4"
-            }`}
+            className={`bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 transition-all ${isCollapsed ? "h-9 w-9 p-0" : "w-full h-10 px-4"
+              }`}
             title="Create new"
           >
             <Plus className="h-4 w-4 shrink-0" />
