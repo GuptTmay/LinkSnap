@@ -7,7 +7,15 @@ import { BodyValidatedRequest, ValidatedRequest } from "../types/validated-reque
 import { requireAuth } from "../middlewares/requireAuth";
 import type { ZodType } from "zod";
 import { CreateQrCodeBodySchema, CreateQrCodeParamsSchema } from "../schema/qrcode";
+
 const router = Router();
+
+// get all user links
+router.get(
+  "/",
+  requireAuth,
+  (req, res) => links.getLinks(req as ValidatedRequest, res)
+);
 
 // (req, res) => linkController.createLink(req, res) this is done to avoid the loss of context of 'this' in the controller methods "this" in the controller methods will refer to the controller instance, not the router instance, which is what we want. If we just passed linkController.createLink directly, "this" would refer to the router instance, which would cause errors when trying to access properties of the controller instance.
 router.post(
@@ -33,13 +41,6 @@ router.post(
   requireAuth,
   validate({ body: CreateQrCodeBodySchema, params: CreateQrCodeParamsSchema }),
   (req, res) => qrCodeController.createQrCode(req as ValidatedRequest<typeof CreateQrCodeBodySchema, ZodType, typeof CreateQrCodeParamsSchema>, res)
-);
-
-// get all user links
-router.get(
-  "/links",
-  requireAuth,
-  (req, res) => links.getLinks(req as ValidatedRequest, res)
 );
 
 // Get all links with qrcodes.

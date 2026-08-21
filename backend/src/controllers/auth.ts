@@ -50,9 +50,10 @@ export default class AuthController {
     // Injecting token into cookie payload headers block
     res.cookie('token', token, {
       httpOnly: true, // Blocks client scripts execution layer access (Stops XSS)
-      secure: true,   // Mandates HTTPS delivery pipelines only
-      sameSite: 'strict', // Defense layer guarding from cross-site request forgeries (CSRF)
-      maxAge: JWT.TOKEN_EXP // token age 
+      secure: process.env.NODE_ENV === "production", // Mandates HTTPS delivery pipelines only
+      sameSite: 'lax', // Defense layer guarding from cross-site request forgeries (CSRF)
+      path: '/',
+      maxAge: JWT.TOKEN_EXP * 1000 // token age 
     });
 
     return res.status(200).json(success("Authentication Successful", {}));
@@ -86,8 +87,9 @@ export default class AuthController {
   async logout(req: Request, res: Response) {
     res.clearCookie('token', {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict'
+      // secure: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: 'lax'
     });
 
     return res.status(200).json(success("Cookie successfully cleared.", {}));

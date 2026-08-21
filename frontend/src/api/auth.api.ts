@@ -14,12 +14,10 @@ export const logout = async () => {
 };
 
 export const googleOauth = async (credentialResponse: CredentialResponse) => {
-  return apiRequest("auth/google", {
+  return apiRequest("/auth/google", {
     method: "POST",
     body: JSON.stringify({
       credential: credentialResponse.credential,
     }),
   });
 };
-
-
