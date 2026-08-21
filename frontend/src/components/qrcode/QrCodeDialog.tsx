@@ -27,6 +27,8 @@ export const QrCodeDialog: React.FC<QrCodeDialogProps> = ({
   registrationFailed = false,
 }) => {
   const [copied, setCopied] = useState(false);
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL || "";
+  const fullShortUrl = `${BACKEND_BASE_URL}/${shortUrl}`;
 
   const handleCopy = async () => {
     try {
@@ -83,7 +85,7 @@ export const QrCodeDialog: React.FC<QrCodeDialogProps> = ({
             <input
               type="text"
               readOnly
-              value={shortUrl}
+              value={fullShortUrl}
               className="flex-1 text-xs sm:text-sm font-mono px-3 py-2 border rounded-md bg-muted/40 text-foreground text-ellipsis"
             />
             <Button size="sm" variant="outline" onClick={handleCopy} className="gap-1">

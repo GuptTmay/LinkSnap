@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ApiError } from "@/types/error";
 import { toast } from "sonner";
 
 export const AuthPage: React.FC = () => {
@@ -33,28 +34,16 @@ export const AuthPage: React.FC = () => {
             <GoogleLogin
               onSuccess={async (credentialResponse) => {
                 try {
-                  const res = await googleOauth(credentialResponse);
-                  // const res = await fetch("http://localhost:3000/api/v1/auth/google", {
-                  //   method: "POST",
-                  //   headers: {
-                  //     "Content-Type": "application/json",
-                  //   },
-                  //   body: JSON.stringify({
-                  //     credential: credentialResponse.credential,
-                  //   }),
-                  // });
-                  console.log(res);
-
-                  if (res.ok) {
-                    toast.success("Successfully logged in!");
-                    await checkAuth();
-                    navigate("/home", { replace: true });
-                  } else {
-                    toast.error("Authentication failed. Please try again.");
-                  }
+                  await googleOauth(credentialResponse);
+                  toast.success("Successfully logged in!");
+                  await checkAuth();
+                  navigate("/home", { replace: true });
                 } catch (err) {
-                  console.log(err);
-                  toast.error("An error occurred during authentication." + err);
+                  if (err instanceof ApiError) {
+                    toast.error(err.message);
+                  } else {
+                    toast.error("An error occurred during authentication.");
+                  }
                 }
               }}
               onError={() => {

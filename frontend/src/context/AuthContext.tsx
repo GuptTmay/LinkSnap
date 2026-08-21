@@ -20,16 +20,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const checkAuth = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await getCurrentUser();
-      if (res.ok) {
-        const data = await res.json();
-        const userData = data.user;
-        setUser(userData);
-        setIsAuthenticated(true);
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
-      }
+      const data = await getCurrentUser();
+      const userData = data.user || data.data || data;
+      setUser(userData);
+      setIsAuthenticated(true);
     } catch {
       setUser(null);
       setIsAuthenticated(false);

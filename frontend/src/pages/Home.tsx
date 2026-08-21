@@ -8,11 +8,12 @@ import { createLink } from "@/api/links.api";
 import { createQrCode } from "@/api/qrcode.api";
 import { QrCodeDialog } from "@/components/qrcode/QrCodeDialog";
 import { Link2, QrCode as QrIcon, ArrowRight, Copy, Check, ExternalLink } from "lucide-react";
+import { ApiError } from "@/types/error";
 import { toast } from "sonner";
 import type { ShortLink } from "@/types/link";
 
 export const Home: React.FC = () => {
-  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL || "";
   const [shortUrlInput, setShortUrlInput] = useState("");
   const [qrUrlInput, setQrUrlInput] = useState("");
   
@@ -58,21 +59,18 @@ export const Home: React.FC = () => {
     setIsShortening(true);
 
     try {
-      const res = await createLink(shortUrlInput.trim());
-      const body = await res.json();
-
-      if (!res.ok || !body.success) {
-        toast.error("Unable to create short link.");
-        setShortError(body.message || "Unable to create short link.");
-        return;
-      }
-
+      const body = await createLink(shortUrlInput.trim());
       const linkData: ShortLink = body.data;
       setCreatedLinkResult(linkData);
       toast.success("Short link created successfully!");
       setShortUrlInput("");
-    } catch {
-      toast.error("Unable to create short link.");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        toast.error(err.message);
+        setShortError(err.message);
+      } else {
+        toast.error("Unable to create short link.");
+      }
     } finally {
       setIsShortening(false);
     }
@@ -97,23 +95,15 @@ export const Home: React.FC = () => {
 
     try {
       // Step 1: Create short link
-      const res = await createLink(qrUrlInput.trim());
-      const body = await res.json();
-
-      if (!res.ok || !body.success) {
-        toast.error("Unable to create short link.");
-        setQrError("Unable to create short link.");
-        setIsQrProcessing(false);
-        return;
-      }
-
-      const linkId = body.data.linkId || body.data.id;
+      const body = await createLink(qrUrlInput.trim());
+      const linkId = body.data.id;
       const shortUrl = body.data.shortUrl;
+      const fullShortUrl = `${BACKEND_BASE_URL}/${shortUrl}`;
 
       // Step 2: Generate QR code locally using qrcode package
       let dataUrl = "";
       try {
-        dataUrl = await QRCode.toDataURL(shortUrl, { width: 300, margin: 2 });
+        dataUrl = await QRCode.toDataURL(fullShortUrl, { width: 300, margin: 2 });
       } catch {
         toast.error("Failed to generate QR code image.");
         setIsQrProcessing(false);
@@ -125,22 +115,26 @@ export const Home: React.FC = () => {
 
       // Step 3: Register QR code with backend
       try {
-        const qrRes = await createQrCode(linkId, {});
-        if (!qrRes.ok) {
-          setDialogRegFailed(true);
-          toast.error("Unable to register QR code with server.");
-        } else {
-          toast.success("QR code created and registered!");
-        }
-      } catch {
+        await createQrCode(linkId, {});
+        toast.success("QR code created and registered!");
+      } catch (err) {
         setDialogRegFailed(true);
-        toast.error("Unable to register QR code.");
+        if (err instanceof ApiError) {
+          toast.error(err.message);
+        } else {
+          toast.error("Unable to register QR code with server.");
+        }
       }
 
       setDialogOpen(true);
       setQrUrlInput("");
-    } catch {
-      toast.error("Unable to create QR code.");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        toast.error(err.message);
+        setQrError(err.message);
+      } else {
+        toast.error("Unable to create QR code.");
+      }
     } finally {
       setIsQrProcessing(false);
     }
