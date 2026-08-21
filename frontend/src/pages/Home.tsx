@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import type { ShortLink } from "@/types/link";
 
 export const Home: React.FC = () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [shortUrlInput, setShortUrlInput] = useState("");
   const [qrUrlInput, setQrUrlInput] = useState("");
   
@@ -221,7 +222,7 @@ export const Home: React.FC = () => {
                   <div className="overflow-hidden w-full">
                     <p className="text-xs text-muted-foreground font-medium">Shortened URL</p>
                     <a
-                      href={createdLinkResult.shortUrl}
+                      href={`${BACKEND_BASE_URL}/${createdLinkResult.shortUrl}`}
                       target="_blank"
                       rel="noreferrer"
                       className="text-sm font-semibold text-blue-600 hover:underline flex items-center gap-1 truncate"
@@ -233,7 +234,7 @@ export const Home: React.FC = () => {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => copyToClipboard(createdLinkResult.shortUrl, createdLinkResult.id || "latest")}
+                    onClick={() => copyToClipboard(`${BACKEND_BASE_URL}/${createdLinkResult.shortUrl}`, createdLinkResult.id || "latest")}
                     className="shrink-0 gap-1 w-full sm:w-auto"
                   >
                     {copiedLinkId === (createdLinkResult.id || "latest") ? (
