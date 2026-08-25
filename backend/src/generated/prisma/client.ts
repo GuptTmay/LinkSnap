@@ -61,3 +61,13 @@ export type QrCode = Prisma.QrCodeModel
  * 
  */
 export type LinkClick = Prisma.LinkClickModel
+/**
+ * Model Tag
+ * 
+ */
+export type Tag = Prisma.TagModel
+/**
+ * Model LinkTag
+ * 
+ */
+export type LinkTag = Prisma.LinkTagModel

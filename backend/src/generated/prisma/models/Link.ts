@@ -193,6 +193,7 @@ export type LinkWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   qrCode?: Prisma.XOR<Prisma.QrCodeNullableScalarRelationFilter, Prisma.QrCodeWhereInput> | null
   linkClicks?: Prisma.LinkClickListRelationFilter
+  tags?: Prisma.LinkTagListRelationFilter
 }
 
 export type LinkOrderByWithRelationInput = {
@@ -205,6 +206,7 @@ export type LinkOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   qrCode?: Prisma.QrCodeOrderByWithRelationInput
   linkClicks?: Prisma.LinkClickOrderByRelationAggregateInput
+  tags?: Prisma.LinkTagOrderByRelationAggregateInput
 }
 
 export type LinkWhereUniqueInput = Prisma.AtLeast<{
@@ -220,6 +222,7 @@ export type LinkWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   qrCode?: Prisma.XOR<Prisma.QrCodeNullableScalarRelationFilter, Prisma.QrCodeWhereInput> | null
   linkClicks?: Prisma.LinkClickListRelationFilter
+  tags?: Prisma.LinkTagListRelationFilter
 }, "id" | "shortUrl">
 
 export type LinkOrderByWithAggregationInput = {
@@ -255,6 +258,7 @@ export type LinkCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutLinksInput
   qrCode?: Prisma.QrCodeCreateNestedOneWithoutLinkInput
   linkClicks?: Prisma.LinkClickCreateNestedManyWithoutLinkInput
+  tags?: Prisma.LinkTagCreateNestedManyWithoutLinkInput
 }
 
 export type LinkUncheckedCreateInput = {
@@ -266,6 +270,7 @@ export type LinkUncheckedCreateInput = {
   userId: string
   qrCode?: Prisma.QrCodeUncheckedCreateNestedOneWithoutLinkInput
   linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutLinkInput
+  tags?: Prisma.LinkTagUncheckedCreateNestedManyWithoutLinkInput
 }
 
 export type LinkUpdateInput = {
@@ -277,6 +282,7 @@ export type LinkUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutLinksNestedInput
   qrCode?: Prisma.QrCodeUpdateOneWithoutLinkNestedInput
   linkClicks?: Prisma.LinkClickUpdateManyWithoutLinkNestedInput
+  tags?: Prisma.LinkTagUpdateManyWithoutLinkNestedInput
 }
 
 export type LinkUncheckedUpdateInput = {
@@ -288,6 +294,7 @@ export type LinkUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   qrCode?: Prisma.QrCodeUncheckedUpdateOneWithoutLinkNestedInput
   linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutLinkNestedInput
+  tags?: Prisma.LinkTagUncheckedUpdateManyWithoutLinkNestedInput
 }
 
 export type LinkCreateManyInput = {
@@ -428,6 +435,20 @@ export type LinkUpdateOneRequiredWithoutLinkClicksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LinkUpdateToOneWithWhereWithoutLinkClicksInput, Prisma.LinkUpdateWithoutLinkClicksInput>, Prisma.LinkUncheckedUpdateWithoutLinkClicksInput>
 }
 
+export type LinkCreateNestedOneWithoutTagsInput = {
+  create?: Prisma.XOR<Prisma.LinkCreateWithoutTagsInput, Prisma.LinkUncheckedCreateWithoutTagsInput>
+  connectOrCreate?: Prisma.LinkCreateOrConnectWithoutTagsInput
+  connect?: Prisma.LinkWhereUniqueInput
+}
+
+export type LinkUpdateOneRequiredWithoutTagsNestedInput = {
+  create?: Prisma.XOR<Prisma.LinkCreateWithoutTagsInput, Prisma.LinkUncheckedCreateWithoutTagsInput>
+  connectOrCreate?: Prisma.LinkCreateOrConnectWithoutTagsInput
+  upsert?: Prisma.LinkUpsertWithoutTagsInput
+  connect?: Prisma.LinkWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LinkUpdateToOneWithWhereWithoutTagsInput, Prisma.LinkUpdateWithoutTagsInput>, Prisma.LinkUncheckedUpdateWithoutTagsInput>
+}
+
 export type LinkCreateWithoutUserInput = {
   id?: string
   shortUrl: string
@@ -436,6 +457,7 @@ export type LinkCreateWithoutUserInput = {
   updatedAt?: Date | string
   qrCode?: Prisma.QrCodeCreateNestedOneWithoutLinkInput
   linkClicks?: Prisma.LinkClickCreateNestedManyWithoutLinkInput
+  tags?: Prisma.LinkTagCreateNestedManyWithoutLinkInput
 }
 
 export type LinkUncheckedCreateWithoutUserInput = {
@@ -446,6 +468,7 @@ export type LinkUncheckedCreateWithoutUserInput = {
   updatedAt?: Date | string
   qrCode?: Prisma.QrCodeUncheckedCreateNestedOneWithoutLinkInput
   linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutLinkInput
+  tags?: Prisma.LinkTagUncheckedCreateNestedManyWithoutLinkInput
 }
 
 export type LinkCreateOrConnectWithoutUserInput = {
@@ -494,6 +517,7 @@ export type LinkCreateWithoutQrCodeInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutLinksInput
   linkClicks?: Prisma.LinkClickCreateNestedManyWithoutLinkInput
+  tags?: Prisma.LinkTagCreateNestedManyWithoutLinkInput
 }
 
 export type LinkUncheckedCreateWithoutQrCodeInput = {
@@ -504,6 +528,7 @@ export type LinkUncheckedCreateWithoutQrCodeInput = {
   updatedAt?: Date | string
   userId: string
   linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutLinkInput
+  tags?: Prisma.LinkTagUncheckedCreateNestedManyWithoutLinkInput
 }
 
 export type LinkCreateOrConnectWithoutQrCodeInput = {
@@ -530,6 +555,7 @@ export type LinkUpdateWithoutQrCodeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutLinksNestedInput
   linkClicks?: Prisma.LinkClickUpdateManyWithoutLinkNestedInput
+  tags?: Prisma.LinkTagUpdateManyWithoutLinkNestedInput
 }
 
 export type LinkUncheckedUpdateWithoutQrCodeInput = {
@@ -540,6 +566,7 @@ export type LinkUncheckedUpdateWithoutQrCodeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutLinkNestedInput
+  tags?: Prisma.LinkTagUncheckedUpdateManyWithoutLinkNestedInput
 }
 
 export type LinkCreateWithoutLinkClicksInput = {
@@ -550,6 +577,7 @@ export type LinkCreateWithoutLinkClicksInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutLinksInput
   qrCode?: Prisma.QrCodeCreateNestedOneWithoutLinkInput
+  tags?: Prisma.LinkTagCreateNestedManyWithoutLinkInput
 }
 
 export type LinkUncheckedCreateWithoutLinkClicksInput = {
@@ -560,6 +588,7 @@ export type LinkUncheckedCreateWithoutLinkClicksInput = {
   updatedAt?: Date | string
   userId: string
   qrCode?: Prisma.QrCodeUncheckedCreateNestedOneWithoutLinkInput
+  tags?: Prisma.LinkTagUncheckedCreateNestedManyWithoutLinkInput
 }
 
 export type LinkCreateOrConnectWithoutLinkClicksInput = {
@@ -586,6 +615,7 @@ export type LinkUpdateWithoutLinkClicksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutLinksNestedInput
   qrCode?: Prisma.QrCodeUpdateOneWithoutLinkNestedInput
+  tags?: Prisma.LinkTagUpdateManyWithoutLinkNestedInput
 }
 
 export type LinkUncheckedUpdateWithoutLinkClicksInput = {
@@ -596,6 +626,67 @@ export type LinkUncheckedUpdateWithoutLinkClicksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   qrCode?: Prisma.QrCodeUncheckedUpdateOneWithoutLinkNestedInput
+  tags?: Prisma.LinkTagUncheckedUpdateManyWithoutLinkNestedInput
+}
+
+export type LinkCreateWithoutTagsInput = {
+  id?: string
+  shortUrl: string
+  longUrl: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutLinksInput
+  qrCode?: Prisma.QrCodeCreateNestedOneWithoutLinkInput
+  linkClicks?: Prisma.LinkClickCreateNestedManyWithoutLinkInput
+}
+
+export type LinkUncheckedCreateWithoutTagsInput = {
+  id?: string
+  shortUrl: string
+  longUrl: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  qrCode?: Prisma.QrCodeUncheckedCreateNestedOneWithoutLinkInput
+  linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutLinkInput
+}
+
+export type LinkCreateOrConnectWithoutTagsInput = {
+  where: Prisma.LinkWhereUniqueInput
+  create: Prisma.XOR<Prisma.LinkCreateWithoutTagsInput, Prisma.LinkUncheckedCreateWithoutTagsInput>
+}
+
+export type LinkUpsertWithoutTagsInput = {
+  update: Prisma.XOR<Prisma.LinkUpdateWithoutTagsInput, Prisma.LinkUncheckedUpdateWithoutTagsInput>
+  create: Prisma.XOR<Prisma.LinkCreateWithoutTagsInput, Prisma.LinkUncheckedCreateWithoutTagsInput>
+  where?: Prisma.LinkWhereInput
+}
+
+export type LinkUpdateToOneWithWhereWithoutTagsInput = {
+  where?: Prisma.LinkWhereInput
+  data: Prisma.XOR<Prisma.LinkUpdateWithoutTagsInput, Prisma.LinkUncheckedUpdateWithoutTagsInput>
+}
+
+export type LinkUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shortUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  longUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutLinksNestedInput
+  qrCode?: Prisma.QrCodeUpdateOneWithoutLinkNestedInput
+  linkClicks?: Prisma.LinkClickUpdateManyWithoutLinkNestedInput
+}
+
+export type LinkUncheckedUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shortUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  longUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  qrCode?: Prisma.QrCodeUncheckedUpdateOneWithoutLinkNestedInput
+  linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutLinkNestedInput
 }
 
 export type LinkCreateManyUserInput = {
@@ -614,6 +705,7 @@ export type LinkUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   qrCode?: Prisma.QrCodeUpdateOneWithoutLinkNestedInput
   linkClicks?: Prisma.LinkClickUpdateManyWithoutLinkNestedInput
+  tags?: Prisma.LinkTagUpdateManyWithoutLinkNestedInput
 }
 
 export type LinkUncheckedUpdateWithoutUserInput = {
@@ -624,6 +716,7 @@ export type LinkUncheckedUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   qrCode?: Prisma.QrCodeUncheckedUpdateOneWithoutLinkNestedInput
   linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutLinkNestedInput
+  tags?: Prisma.LinkTagUncheckedUpdateManyWithoutLinkNestedInput
 }
 
 export type LinkUncheckedUpdateManyWithoutUserInput = {
@@ -641,10 +734,12 @@ export type LinkUncheckedUpdateManyWithoutUserInput = {
 
 export type LinkCountOutputType = {
   linkClicks: number
+  tags: number
 }
 
 export type LinkCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   linkClicks?: boolean | LinkCountOutputTypeCountLinkClicksArgs
+  tags?: boolean | LinkCountOutputTypeCountTagsArgs
 }
 
 /**
@@ -664,6 +759,13 @@ export type LinkCountOutputTypeCountLinkClicksArgs<ExtArgs extends runtime.Types
   where?: Prisma.LinkClickWhereInput
 }
 
+/**
+ * LinkCountOutputType without action
+ */
+export type LinkCountOutputTypeCountTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LinkTagWhereInput
+}
+
 
 export type LinkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -675,6 +777,7 @@ export type LinkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   qrCode?: boolean | Prisma.Link$qrCodeArgs<ExtArgs>
   linkClicks?: boolean | Prisma.Link$linkClicksArgs<ExtArgs>
+  tags?: boolean | Prisma.Link$tagsArgs<ExtArgs>
   _count?: boolean | Prisma.LinkCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["link"]>
 
@@ -712,6 +815,7 @@ export type LinkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   qrCode?: boolean | Prisma.Link$qrCodeArgs<ExtArgs>
   linkClicks?: boolean | Prisma.Link$linkClicksArgs<ExtArgs>
+  tags?: boolean | Prisma.Link$tagsArgs<ExtArgs>
   _count?: boolean | Prisma.LinkCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LinkIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -727,6 +831,7 @@ export type $LinkPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     user: Prisma.$UserPayload<ExtArgs>
     qrCode: Prisma.$QrCodePayload<ExtArgs> | null
     linkClicks: Prisma.$LinkClickPayload<ExtArgs>[]
+    tags: Prisma.$LinkTagPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1132,6 +1237,7 @@ export interface Prisma__LinkClient<T, Null = never, ExtArgs extends runtime.Typ
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   qrCode<T extends Prisma.Link$qrCodeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Link$qrCodeArgs<ExtArgs>>): Prisma.Prisma__QrCodeClient<runtime.Types.Result.GetResult<Prisma.$QrCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   linkClicks<T extends Prisma.Link$linkClicksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Link$linkClicksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LinkClickPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tags<T extends Prisma.Link$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Link$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LinkTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1608,6 +1714,30 @@ export type Link$linkClicksArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.LinkClickScalarFieldEnum | Prisma.LinkClickScalarFieldEnum[]
+}
+
+/**
+ * Link.tags
+ */
+export type Link$tagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LinkTag
+   */
+  select?: Prisma.LinkTagSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LinkTag
+   */
+  omit?: Prisma.LinkTagOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LinkTagInclude<ExtArgs> | null
+  where?: Prisma.LinkTagWhereInput
+  orderBy?: Prisma.LinkTagOrderByWithRelationInput | Prisma.LinkTagOrderByWithRelationInput[]
+  cursor?: Prisma.LinkTagWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LinkTagScalarFieldEnum | Prisma.LinkTagScalarFieldEnum[]
 }
 
 /**

@@ -54,7 +54,9 @@ export const ModelName = {
   User: 'User',
   Link: 'Link',
   QrCode: 'QrCode',
-  LinkClick: 'LinkClick'
+  LinkClick: 'LinkClick',
+  Tag: 'Tag',
+  LinkTag: 'LinkTag'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -123,6 +125,24 @@ export const LinkClickScalarFieldEnum = {
 } as const
 
 export type LinkClickScalarFieldEnum = (typeof LinkClickScalarFieldEnum)[keyof typeof LinkClickScalarFieldEnum]
+
+
+export const TagScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]
+
+
+export const LinkTagScalarFieldEnum = {
+  linkId: 'linkId',
+  tagId: 'tagId'
+} as const
+
+export type LinkTagScalarFieldEnum = (typeof LinkTagScalarFieldEnum)[keyof typeof LinkTagScalarFieldEnum]
 
 
 export const SortOrder = {

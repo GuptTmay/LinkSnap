@@ -26,6 +26,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   links Link[]
+  tags Tag[] 
 
   @@unique([provider, providerId])
 }
@@ -44,6 +45,8 @@ model Link {
   qrCode     QrCode? // optional — null if user never generated one 
   linkClicks LinkClick[]
 
+  tags LinkTag[]
+
   @@index([userId])
 }
 
@@ -52,7 +55,6 @@ model QrCode {
   linkId String @unique // enforces one-to-one: a link has at most one QR record
   link   Link   @relation(fields: [linkId], references: [id], onDelete: Cascade)
 
-  // downloads     Int   @default(0)
   customization Json? // color, logo, size — open-ended for future features, no migration needed to add options
 
   createdAt DateTime @default(now())
@@ -75,4 +77,29 @@ model LinkClick {
   createdAt DateTime @default(now())
 
   @@index([linkId, createdAt])
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(50)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  links LinkTag[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model LinkTag {
+  linkId String
+  tagId  String
+
+  link Link @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([linkId, tagId])
+  @@index([tagId])
 }
