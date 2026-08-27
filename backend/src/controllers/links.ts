@@ -98,7 +98,6 @@ export class LinksController {
     }
   }
 
-
   async updateLink(req: ValidatedRequest<typeof UpdateLinkBodySchema, ZodType, typeof UpdateLinkParamsSchema>, res: Response) {
     const data = req.validated.body;
     const linkId = req.validated.params.linkId;
@@ -107,12 +106,11 @@ export class LinksController {
     try {
       const updatedLink = await linksRepository.updateLink(userId, linkId, data);
 
-      if (!updatedLink) {
-        return res.status(404).json(failure("Link not found", "NOT_FOUND"));
-      }
-
       return res.status(200).json(success("Link updated successfully", updatedLink));
     } catch (err) {
+      if (isRecordNotFoundError(err)) {
+        return res.status(404).json(failure("Link not found", "NOT_FOUND"));
+      }
       console.error(err);
       return res.status(500).json(failure("Link Updation failed", "INTERNAL_ERROR"));
     }
