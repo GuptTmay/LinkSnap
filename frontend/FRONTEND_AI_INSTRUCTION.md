@@ -6,11 +6,11 @@ LinksCreatePage:
 - use createLink in /src/api/links.api.ts 
 - this would be the schema of links body. 
 {
-  shortUrl: z.string().min(1).max(20).optional(),
+  shortUrl: z.string().trim().min(1).max(20).regex(/^[a-zA-Z0-9_-]+$/, "Invalid short URL").optional(),
   longUrl: z.url(),
-  title: z.string().min(1).max(100).optional(),
-  tags: z.array(z.string()).optional(),
-}  
+  title: z.string().trim().min(1).max(64).optional(),
+  tags: z.array(z.string().trim().min(1).max(50).toLowerCase()).optional(),
+}
 
 instruction: you need to create a page which creates a links and redirect the user to the link page where all the information about that single created link exist. 
     The page should ask for: 
@@ -28,7 +28,7 @@ instruction: you need to create a page which creates a links and redirect the us
              using a single component.
             - Add all new or old tags to the data of createLink as an array.
             - Also add debouncing. to input component. 
-            - Use getUserTags func /src/api/tags.api.ts to get tags leave empty if you want to fetch all tags.    
+            - Use getTags func /src/api/tags.api.ts to get tags leave empty if you want to fetch all tags.    
      
     When user is done he can click on create link button which will invoke the createLink func.      
     Show response as per the request response using sonner toast. 

@@ -19,3 +19,4 @@
  ## Future Todo
 1. Feat: Integration Test for Analytics Repo
 2. Refactor: Optimize RedirectByLongUrl func in Link Controller.
+3. Feat: Add last access time to tags. So we can give user the most recently used tags.
