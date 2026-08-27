@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import linksRouter from "./routers/links";
 import authRouter from "./routers/auth";
 import redirectRouter from "./routers/redirect";
+import tagsRouter from "./routers/tags";
 import { API_PREFIX } from "./config";
 import { errorHandler } from "./middlewares/errorHandler";
 
@@ -31,6 +32,7 @@ app.get('/health', (req, res) => {
 app.use("/", redirectRouter);
 app.use(`${API_PREFIX}/auth`, authRouter);
 app.use(`${API_PREFIX}/links`, linksRouter);
+app.use(`${API_PREFIX}/tags`, tagsRouter);
 
 
 app.use(errorHandler); // Error handling middleware should be the last middleware in the stack

@@ -13,14 +13,14 @@ import { validate } from "../middlewares/requestValidate";
 const router = Router();
 // Get all tags belonging to the authenticated user
 router.get(
-  "/tags",
+  "/",
   requireAuth,
   (req, res) => tagsController.getTags(req as ValidatedRequest, res)
 );
 
 // Add tag to a link
 router.put(
-  "/:linkId/tags",
+  "/:linkId",
   requireAuth,
   validate({
     body: CreateTagSchema,
@@ -35,7 +35,7 @@ router.put(
 
 // Remove tag from a link
 router.delete(
-  "/:linkId/tags/:tagId",
+  "/:linkId/:tagId",
   requireAuth,
   validate({
     params: DeleteLinkTagParamsSchema,
