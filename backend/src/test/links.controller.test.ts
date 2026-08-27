@@ -16,12 +16,12 @@ app.use((req: any, res, next) => {
 });
 
 // Explicit route definitions wrapping req.validated
-app.post("/api/links", (req: any, res) => {
+app.post("/links", (req: any, res) => {
   req.validated = { body: req.body, params: req.params, query: req.query };
   return links.createLink(req, res);
 });
 
-app.patch("/api/links/:linkId", (req: any, res) => {
+app.patch("/links/:linkId", (req: any, res) => {
   req.validated = { body: req.body, params: req.params, query: req.query };
   return links.updateLink(req, res);
 });
@@ -29,6 +29,12 @@ app.patch("/api/links/:linkId", (req: any, res) => {
 app.get("/:shorturl", (req: any, res) => {
   req.validated = { body: req.body, params: req.params, query: req.query };
   return links.redirectToLongUrl(req, res);
+});
+
+app.get("/links/check/:shorturl", (req: any, res) => {
+  req.user = { id: testUserId };
+  req.validated = { body: req.body, params: req.params, query: req.query };
+  return links.checkIfShortUrl(req, res);
 });
 
 describe("Links Controller HTTP API (Integration)", () => {
@@ -54,10 +60,10 @@ describe("Links Controller HTTP API (Integration)", () => {
     await prisma.$disconnect();
   });
 
-  describe("POST /api/links", () => {
+  describe("POST /links", () => {
     it("should create link and return 201 with success payload", async () => {
       const response = await request(app)
-        .post("/api/links")
+        .post("/links")
         .send({
           shortUrl: "custom123",
           longUrl: "https://example.com",
@@ -85,7 +91,7 @@ describe("Links Controller HTTP API (Integration)", () => {
       });
 
       const response = await request(app)
-        .post("/api/links")
+        .post("/links")
         .send({
           shortUrl: "duplicate",
           longUrl: "https://another.com",
@@ -97,7 +103,7 @@ describe("Links Controller HTTP API (Integration)", () => {
     });
   });
 
-  describe("PATCH /api/links/:linkId", () => {
+  describe("PATCH /links/:linkId", () => {
     it("should update an existing link", async () => {
       const link = await prisma.link.create({
         data: {
@@ -108,7 +114,7 @@ describe("Links Controller HTTP API (Integration)", () => {
       });
 
       const response = await request(app)
-        .patch(`/api/links/${link.id}`)
+        .patch(`/links/${link.id}`)
         .send({
           shortUrl: "modified-url",
           longUrl: "https://modified.com",
@@ -121,7 +127,7 @@ describe("Links Controller HTTP API (Integration)", () => {
 
     it("should return 404 if link does not exist", async () => {
       const response = await request(app)
-        .patch("/api/links/00000000-0000-0000-0000-000000000000")
+        .patch("/links/00000000-0000-0000-0000-000000000000")
         .send({ shortUrl: "new-url" });
 
       expect(response.status).toBe(404);
@@ -146,6 +152,39 @@ describe("Links Controller HTTP API (Integration)", () => {
 
       expect(response.status).toBe(302);
       expect(response.headers.location).toBe("https://target-destination.com");
+    });
+  });
+
+  describe("GET /links/check/:shorturl", () => {
+    it("should return exists: true if shortUrl already exists", async () => {
+      // Seed existing link in DB
+      await prisma.link.create({
+        data: {
+          shortUrl: "taken-url",
+          longUrl: "https://example.com",
+          userId: testUserId,
+        },
+      });
+
+      const response = await request(app).get("/links/check/taken-url");
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        success: true,
+        message: "Short URL already exists",
+        data: { exists: true },
+      });
+    });
+
+    it("should return exists: false if shortUrl is available", async () => {
+      const response = await request(app).get("/links/check/available-url");
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        success: true,
+        message: "Short URL is available",
+        data: { exists: false },
+      });
     });
   });
 });

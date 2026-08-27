@@ -5,7 +5,7 @@ import { ZodType } from "zod";
 
 import { linksRepository } from "../repositories/links";
 import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
-import { CreateLinkSchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
+import { CheckIfShortUrlExistSchema, CreateLinkSchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
 import { BodyValidatedRequest, ParamsValidatedRequest, ValidatedRequest } from "../types/validated-request";
 import { failure, success } from "../utils/status";
 import { isRecordNotFoundError, isUniqueConstraintError } from "../utils/prisma";
@@ -150,6 +150,32 @@ export class LinksController {
       }
       console.error(err);
       return res.status(500).json(failure("Internal server error", "INTERNAL_ERROR", err));
+    }
+  }
+
+  async checkIfShortUrl(
+    req: ParamsValidatedRequest<typeof CheckIfShortUrlExistSchema>,
+    res: Response
+  ) {
+    const { shorturl } = req.validated.params;
+
+    try {
+      const exists = await linksRepository.shortUrlExists(shorturl);
+
+      return res.status(200).json(
+        success(
+          exists
+            ? "Short URL already exists"
+            : "Short URL is available",
+          { exists }
+        )
+      );
+    } catch (err) {
+      console.error("Error checking short URL:", err);
+
+      return res.status(500).json(
+        failure("Internal server error", "INTERNAL_ERROR")
+      );
     }
   }
 

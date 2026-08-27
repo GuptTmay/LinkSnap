@@ -25,6 +25,11 @@ export const RedirectLinkSchema = z.object({
   shorturl: z.string().min(LINK.MIN_LINK_ID_LENGTH).max(LINK.MAX_LINK_ID_LENGTH),
 });
 
+export const CheckIfShortUrlExistSchema = z.object({
+  shorturl: z.string().min(LINK.MIN_LINK_ID_LENGTH).max(LINK.MAX_LINK_ID_LENGTH),
+});
+
+
 export const LoginSchema = z.object({
   email: z.email(),
   password: z.string().min(8).max(100),

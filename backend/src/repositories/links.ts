@@ -70,11 +70,20 @@ export class LinksRepository {
     });
   }
 
-  // get single Link b shorturl
+  // get single Link  shorturl
   async findByShortUrl(shortUrl: string) {
     return await prisma.link.findUniqueOrThrow({
       where: { shortUrl },
     });
+  }
+
+  async shortUrlExists(shortUrl: string): Promise<boolean> {
+    const link = await prisma.link.findUnique({
+      where: { shortUrl },
+      select: { id: true },
+    });
+
+    return link !== null;
   }
 
   // patch update link: longUrl, shortUrl

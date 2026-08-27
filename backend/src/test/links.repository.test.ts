@@ -73,6 +73,28 @@ describe("LinksRepository (Integration)", () => {
     });
   });
 
+  describe("shortUrlExists", () => {
+    it("should return true if shortUrl exists", async () => {
+      await prisma.link.create({
+        data: {
+          shortUrl: "find-me",
+          longUrl: "https://google.com",
+          userId: testUserId,
+        },
+      });
+
+      const exists = await repository.shortUrlExists("find-me");
+
+      expect(exists).toBe(true);
+    });
+
+    it("should return false if shortUrl does not exist", async () => {
+      const exists = await repository.shortUrlExists("non-existent");
+
+      expect(exists).toBe(false);
+    });
+  });
+
   describe("updateLink", () => {
     it("should update shortUrl and longUrl in the DB", async () => {
       const created = await prisma.link.create({

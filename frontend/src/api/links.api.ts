@@ -16,3 +16,11 @@ export const getLinks = async () => {
     method: "GET",
   });
 };
+
+// check if shortUrl is avaiable for use or not.
+// return body {exists: boolean}
+export const checkIfShortUrlExist = async (shorturl: string) => {
+  return apiRequest(`/links/check/${shorturl}`, {
+    method: "GET",
+  });
+}
