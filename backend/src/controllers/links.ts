@@ -35,7 +35,8 @@ export class LinksController {
           customShortUrl,
           longUrl,
           userId,
-          title
+          title,
+          tags
         );
 
         return res.status(201).json(
