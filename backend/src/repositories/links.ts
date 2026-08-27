@@ -34,8 +34,7 @@ export class LinksRepository {
         },
       });
 
-      // Creating tags
-      if (tags) {
+      if (tags && tags.length > 0) {
         for (const tag of tags) {
           // Find or create user's tag
           const currTag = await tx.tag.upsert({
