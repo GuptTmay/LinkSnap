@@ -15,36 +15,88 @@ import { sendNotFoundPage } from '../utils/errorView';
 
 
 export class LinksController {
-  async createLink(req: BodyValidatedRequest<typeof CreateLinkSchema>, res: Response) {
-    const { longUrl } = req.validated.body;
-    const userId = req.user?.id; // Assuming the user ID is stored in req.user after authentication 
+  async createLink(
+    req: BodyValidatedRequest<typeof CreateLinkSchema>,
+    res: Response
+  ) {
+    const {
+      shortUrl: customShortUrl,
+      longUrl,
+      title,
+      tags,
+    } = req.validated.body;
 
-    // NOTE: no format/protocol validation here yet — worth adding
-    // (e.g. reject anything that isn't http/https) before this goes to prod.
+    const userId = req.user!.id;
 
-    for (let i = 0; i < MAX_RETRIES; i++) {
-      const shortUrl = nanoid(LINK_ID_LENGTH);
+    try {
+      // Custom short URL
+      if (customShortUrl) {
+        const link = await linksRepository.create(
+          customShortUrl,
+          longUrl,
+          userId,
+          title
+        );
 
-      try {
-        const data = await linksRepository.create(shortUrl, longUrl, userId);
-        return res.status(201).json(success("Link created", { id: data.id, shortUrl }));
-      } catch (err) {
-        if (isUniqueConstraintError(err)) {
-          // Collision, try another nanoid.
-          continue;
-        }
-
-        return res
-          .status(500)
-          .json(failure("Failed to generate a unique short URL", "INTERNAL_ERROR"));
-
+        return res.status(201).json(
+          success("Link created", {
+            id: link.id,
+            shortUrl: link.shortUrl,
+          })
+        );
       }
-    }
 
-    return res
-      .status(500)
-      .json(failure("Failed to generate a unique short URL", "INTERNAL_ERROR"));
+      // Automatically generated short URL
+      for (let i = 0; i < MAX_RETRIES; i++) {
+        const shortUrl = nanoid(LINK_ID_LENGTH);
+
+        try {
+          const link = await linksRepository.create(
+            shortUrl,
+            longUrl,
+            userId,
+            title
+          );
+
+          return res.status(201).json(
+            success("Link created", {
+              id: link.id,
+              shortUrl: link.shortUrl,
+            })
+          );
+        } catch (err) {
+          if (isUniqueConstraintError(err)) {
+            continue;
+          }
+
+          throw err;
+        }
+      }
+
+      return res.status(500).json(
+        failure(
+          "Failed to generate a unique short URL",
+          "INTERNAL_ERROR"
+        )
+      );
+    } catch (err) {
+      if (isUniqueConstraintError(err)) {
+        return res.status(409).json(
+          failure(
+            "This short URL is already in use",
+            "SHORT_URL_ALREADY_EXISTS"
+          )
+        );
+      }
+
+      console.error(err);
+
+      return res.status(500).json(
+        failure("Failed to create link", "INTERNAL_ERROR")
+      );
+    }
   }
+
 
   async updateLink(req: ValidatedRequest<typeof UpdateLinkBodySchema, ZodType, typeof UpdateLinkParamsSchema>, res: Response) {
     const data = req.validated.body;

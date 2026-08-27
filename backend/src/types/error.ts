@@ -1,6 +1,7 @@
 export type ErrorCode =
-  |  "QR_CODE_ALREADY_EXISTS" // 409 — Show a toast notification.  
-  |  "LINK_NOT_FOUND"         // 404 — Show a toast notification.  
+  | "SHORT_URL_ALREADY_EXISTS"
+  | "QR_CODE_ALREADY_EXISTS" // 409 — Show a toast notification.  
+  | "LINK_NOT_FOUND"         // 404 — Show a toast notification.  
   | "NOT_FOUND"               // 404 — show a toast notification, redirect to a 404 page  
   | "INVALID_TOKEN"       // 401 — show a toast notification, redirect to login page
   | "UNAUTHORIZED"            // 401 — show a toast notification, redirect to login page
@@ -14,4 +15,4 @@ export type ErrorCode =
   | "RATE_LIMITED"            // 429 — show countdown timer, disable submit button
   | "TOKEN_EXPIRED"           // 401 — silently refresh token and retry, no toast at all
   | "ACCOUNT_SUSPENDED";      // 403 — redirect to a dedicated "account suspended" page, not a toast
-  
+

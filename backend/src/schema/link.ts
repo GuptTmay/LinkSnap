@@ -2,10 +2,11 @@ import { z } from "zod";
 import { LINK } from "../config";
 
 export const CreateLinkSchema = z.object({
+  // Regex allow only a-z, A-Z, 0-9, _, - in the shortUrl this also prevents non url friend symbols such as ? / 
+  shortUrl: z.string().trim().min(1).max(20).regex(/^[a-zA-Z0-9_-]+$/, "Invalid short URL").optional(),
   longUrl: z.url(),
-  title: z.string().min(1).max(100).optional(),
-  description: z.string().max(500).optional(),
-  tags: z.array(z.string()).optional(),
+  title: z.string().trim().min(1).max(64).optional(),
+  tags: z.array(z.string().trim().min(1).max(50).toLowerCase()).optional(),
 });
 
 export const UpdateLinkParamsSchema = z.object({
@@ -47,7 +48,6 @@ export const CreateExpenseSchema = z.object({
   category: z.string(),
   amount: z.float64().positive(),
 });
-
 
 export const UpdateExpenseSchema =
   CreateExpenseSchema.partial().refine(

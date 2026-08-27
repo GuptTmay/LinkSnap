@@ -5,7 +5,8 @@ export const CreateTagSchema = z.object({
     .string()
     .trim()
     .min(1, "Tag name cannot be empty")
-    .max(50, "Tag name cannot exceed 50 characters"),
+    .max(50, "Tag name cannot exceed 50 characters")
+    .toLowerCase(),
 });
 
 export const LinkTagParamsSchema = z.object({
