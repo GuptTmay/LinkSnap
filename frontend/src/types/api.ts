@@ -1,24 +1,37 @@
-import  type { ErrorCode } from "./error";
-
 export type ApiSuccess<T> = {
   success: true;
   message: string;
   data: T;
-  meta?: { page?: number; limit?: number; total?: number };
 };
 
-export type ApiError = {
-  success: false;
-  message: string;
-  error: {
-    code: ErrorCode;
-    details?: unknown;
-  };
+export type Tag = {
+  id?: string;
+  name: string;
+  createdAt?: Date;
 };
 
-// export interface JwtPayload {
-//   userId: string;
-//   email: string;
-// }
 
-export type ApiResponse<T> = ApiSuccess<T> | ApiError;
+export type GetTagsResponse = ApiSuccess<{
+  tags: Tag[];
+}>;
+
+export type CheckIfShortUrlExistResponse = ApiSuccess<{
+  exists: boolean;
+}>;
+
+export type Link = {
+  id: string;
+  shortUrl: string;
+  longUrl: string;
+  title: string;
+}
+
+export type CreateLinkResponse = ApiSuccess<Link>;
+
+export type CreateLinkPayload = {
+  shortUrl?: string; // 1-20 chars, regex: /^[a-zA-Z0-9_-]+$/
+  longUrl: string;   // valid URL
+  title?: string;    // 1-64 chars
+  tags?: string[];   // array of string (max 50 chars each)
+}
+

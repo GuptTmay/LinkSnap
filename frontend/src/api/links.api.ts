@@ -1,14 +1,8 @@
+import type { CheckIfShortUrlExistResponse, CreateLinkPayload, CreateLinkResponse } from "@/types/api";
 import { apiRequest } from "./client";
 
 // Create authenticated User Link
-type CreateLink = {
-  shortUrl?: string; // 1-20 chars, regex: /^[a-zA-Z0-9_-]+$/
-  longUrl: string;   // valid URL
-  title?: string;    // 1-64 chars
-  tags?: string[];   // array of string (max 50 chars each)
-}
-
-export const createLink = async (data: CreateLink) => {
+export const createLink = async (data: CreateLinkPayload): Promise<CreateLinkResponse> => {
   return apiRequest("/links", {
     method: "POST",
     body: JSON.stringify(data),
@@ -24,7 +18,7 @@ export const getLinks = async () => {
 
 // check if shortUrl is avaiable for use or not.
 // return body {exists: boolean}
-export const checkIfShortUrlExist = async (shorturl: string) => {
+export const checkIfShortUrlExist = async (shorturl: string): Promise<CheckIfShortUrlExistResponse> => {
   return apiRequest(`/links/check/${shorturl}`, {
     method: "GET",
   });

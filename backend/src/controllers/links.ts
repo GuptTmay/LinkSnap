@@ -29,7 +29,6 @@ export class LinksController {
     const userId = req.user!.id;
 
     try {
-      // Custom short URL
       if (customShortUrl) {
         const link = await linksRepository.create(
           customShortUrl,
@@ -39,15 +38,9 @@ export class LinksController {
           tags
         );
 
-        return res.status(201).json(
-          success("Link created", {
-            id: link.id,
-            shortUrl: link.shortUrl,
-          })
-        );
+        return res.status(201).json(success("Link created", link));
       }
 
-      // Automatically generated short URL
       for (let i = 0; i < MAX_RETRIES; i++) {
         const shortUrl = nanoid(LINK_ID_LENGTH);
 
@@ -56,41 +49,27 @@ export class LinksController {
             shortUrl,
             longUrl,
             userId,
-            title
+            title,
+            tags
           );
 
-          return res.status(201).json(
-            success("Link created", {
-              id: link.id,
-              shortUrl: link.shortUrl,
-            })
-          );
+          return res.status(201).json(success("Link created", link));
         } catch (err) {
           if (isUniqueConstraintError(err)) {
             continue;
           }
-
           throw err;
         }
       }
-
       return res.status(500).json(
-        failure(
-          "Failed to generate a unique short URL",
-          "INTERNAL_ERROR"
-        )
+        failure("Failed to generate a unique short URL", "INTERNAL_ERROR")
       );
     } catch (err) {
       if (isUniqueConstraintError(err)) {
         return res.status(409).json(
-          failure(
-            "This short URL is already in use",
-            "SHORT_URL_ALREADY_EXISTS"
-          )
+          failure("This short URL is already in use", "SHORT_URL_ALREADY_EXISTS")
         );
       }
-
-      console.error(err);
 
       return res.status(500).json(
         failure("Failed to create link", "INTERNAL_ERROR")
@@ -166,7 +145,7 @@ export class LinksController {
         success(
           exists
             ? "Short URL already exists"
-            : "Short URL is available",
+            : "Short URL is available!",
           { exists }
         )
       );

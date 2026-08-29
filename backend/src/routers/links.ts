@@ -55,7 +55,7 @@ router.get(
 
 // Check if A shortUrl exist or not. 
 router.get(
-  "check/:shorturl",
+  "/check/:shorturl",
   validate({ params: CheckIfShortUrlExistSchema }),
   (req, res) => links.checkIfShortUrl(req as ParamsValidatedRequest<typeof CheckIfShortUrlExistSchema>, res)
 );

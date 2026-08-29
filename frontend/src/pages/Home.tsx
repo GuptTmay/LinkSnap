@@ -59,7 +59,7 @@ export const Home: React.FC = () => {
     setIsShortening(true);
 
     try {
-      const body = await createLink(shortUrlInput.trim());
+      const body = await createLink({ longUrl: shortUrlInput.trim() });
       const linkData: ShortLink = body.data;
       setCreatedLinkResult(linkData);
       toast.success("Short link created successfully!");
@@ -95,7 +95,7 @@ export const Home: React.FC = () => {
 
     try {
       // Step 1: Create short link
-      const body = await createLink(qrUrlInput.trim());
+      const body = await createLink({ longUrl: qrUrlInput.trim() });
       const linkId = body.data.id;
       const shortUrl = body.data.shortUrl;
       const fullShortUrl = `${BACKEND_BASE_URL}/${shortUrl}`;

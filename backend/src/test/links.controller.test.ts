@@ -77,6 +77,8 @@ describe("Links Controller HTTP API (Integration)", () => {
         data: {
           id: expect.any(String),
           shortUrl: "custom123",
+          title: "My Site",
+          longUrl: "https://example.com",
         },
       });
     });
@@ -182,7 +184,7 @@ describe("Links Controller HTTP API (Integration)", () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         success: true,
-        message: "Short URL is available",
+        message: "Short URL is available!",
         data: { exists: false },
       });
     });

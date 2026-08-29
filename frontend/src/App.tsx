@@ -9,6 +9,7 @@ import LinksListPage from "@/pages/LinksListPage";
 import QrCodesListPage from "@/pages/QrCodesListPage";
 import AnalyticsPage from "@/pages/AnalyticsPage";
 import SettingsPage from "@/pages/SettingsPage";
+import LinkDetailsPage from "@/pages/LinkDetailsPage";
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
@@ -52,6 +53,16 @@ function App() {
                 <ProtectedRoute>
                   <AppLayout>
                     <LinksCreatePage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/links/:shortUrl/details"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <LinkDetailsPage />
                   </AppLayout>
                 </ProtectedRoute>
               }

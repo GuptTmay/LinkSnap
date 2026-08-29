@@ -5,7 +5,7 @@ export const CreateLinkSchema = z.object({
   // Regex allow only a-z, A-Z, 0-9, _, - in the shortUrl this also prevents non url friend symbols such as ? / 
   shortUrl: z.string().trim().min(1).max(20).regex(/^[a-zA-Z0-9_-]+$/, "Invalid short URL").optional(),
   longUrl: z.url(),
-  title: z.string().trim().min(1).max(64).optional(),
+  title: z.string().trim().min(1).max(64).default("Untitled"),
   tags: z.array(z.string().trim().min(1).max(50)).optional(),
 });
 
@@ -22,11 +22,11 @@ export const UpdateLinkBodySchema = z.object({
 });
 
 export const RedirectLinkSchema = z.object({
-  shorturl: z.string().min(LINK.MIN_LINK_ID_LENGTH).max(LINK.MAX_LINK_ID_LENGTH),
+  shorturl: z.string().min(1).max(20),
 });
 
 export const CheckIfShortUrlExistSchema = z.object({
-  shorturl: z.string().min(LINK.MIN_LINK_ID_LENGTH).max(LINK.MAX_LINK_ID_LENGTH),
+  shorturl: z.string().min(1).max(20),
 });
 
 

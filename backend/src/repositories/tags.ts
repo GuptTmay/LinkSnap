@@ -9,6 +9,11 @@ export class TagsRepository {
       orderBy: {
         name: "asc",
       },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true
+      }
     });
   }
 

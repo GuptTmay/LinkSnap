@@ -31,7 +31,6 @@ export class LinksRepository {
           shortUrl: true,
           longUrl: true,
           title: true,
-          tags: true,
         },
       });
 

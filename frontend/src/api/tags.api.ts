@@ -1,17 +1,8 @@
+import type { GetTagsResponse } from "@/types/api";
 import { apiRequest } from "./client";
 
-// Create authenticated User Link
-export const createLink = async (longUrl: string) => {
-  return apiRequest("/links", {
-    method: "POST",
-    body: JSON.stringify({
-      longUrl,
-    }),
-  });
-};
-
-// Get all auth User Links
-export const getTags = async () => {
+// Get all auth User Tags
+export const getTags = async () : Promise<GetTagsResponse> => {
   return apiRequest("/tags", {
     method: "GET",
   });

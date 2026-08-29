@@ -9,54 +9,64 @@ import { isRecordNotFoundError } from '../utils/prisma';
 
 export default class AuthController {
   async googleAuth(req: Request, res: Response) {
-    const { credential } = req.body;
+    try {
 
-    const ticket = await googleClient.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+      const { credential } = req.body;
 
-    const payload = ticket.getPayload();
-
-    if (!payload) {
-      return res.status(401).json({
-        success: false,
+      const ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
       });
-    }
 
-    const email = payload.email!;
-    const name = payload.name!;
-    const avatar = payload.picture!;
-    const googleId = payload.sub;
+      const payload = ticket.getPayload();
 
-    let user = await userRepo.getUserByEmail(email);
-
-    if (!user) user = await userRepo.createUser(name, email, avatar, "google", googleId);
-
-    if (!user || !user.id) {
-      return res.status(500).json(failure("User Authentication Failed Retry later!", "INTERNAL_ERROR"));
-    }
-
-    const token = jwt.sign(
-      {
-        id: user.id,
-      },
-      process.env.JWT_SECRET!,
-      {
-        expiresIn: "7d",
+      if (!payload) {
+        return res.status(401).json({
+          success: false,
+        });
       }
-    );
 
-    // Injecting token into cookie payload headers block
-    res.cookie('token', token, {
-      httpOnly: true, // Blocks client scripts execution layer access (Stops XSS)
-      secure: process.env.NODE_ENV === "production", // Mandates HTTPS delivery pipelines only
-      sameSite: 'lax', // Defense layer guarding from cross-site request forgeries (CSRF)
-      path: '/',
-      maxAge: JWT.TOKEN_EXP * 1000 // token age 
-    });
+      const email = payload.email!;
+      const name = payload.name!;
+      const avatar = payload.picture!;
+      const googleId = payload.sub;
 
-    return res.status(200).json(success("Authentication Successful", {}));
+      let user = await userRepo.getUserByEmail(email);
+
+      if (!user) user = await userRepo.createUser(name, email, avatar, "google", googleId);
+
+      if (!user || !user.id) {
+        return res.status(500).json(failure("User Authentication Failed Retry later!", "INTERNAL_ERROR"));
+      }
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+        },
+        process.env.JWT_SECRET!,
+        {
+          expiresIn: "7d",
+        }
+      );
+
+      // Injecting token into cookie payload headers block
+      res.cookie('token', token, {
+        httpOnly: true, // Blocks client scripts execution layer access (Stops XSS)
+        secure: process.env.NODE_ENV === "production", // Mandates HTTPS delivery pipelines only
+        sameSite: 'lax', // Defense layer guarding from cross-site request forgeries (CSRF)
+        path: '/',
+        maxAge: JWT.TOKEN_EXP * 1000 // token age 
+      });
+
+      return res.status(200).json(success("Authentication Successful", {}));
+
+    } catch (err) {
+      console.error(err);
+
+      return res
+        .status(500)
+        .json(failure("Internal server error", "INTERNAL_ERROR", err));
+    }
   }
 
   async me(req: Request, res: Response) {
@@ -79,7 +89,7 @@ export default class AuthController {
 
       return res
         .status(500)
-        .json(failure("Internal server error", "INTERNAL_ERROR"));
+        .json(failure("Internal server error", "INTERNAL_ERROR", err));
     }
   }
 

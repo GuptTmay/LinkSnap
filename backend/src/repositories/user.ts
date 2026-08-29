@@ -29,7 +29,7 @@ class UserRepo {
 
   // Get single user info
   async getUserByEmail(email: string) {
-    return await prisma.user.findUniqueOrThrow({
+    return await prisma.user.findUnique({
       where: {
         email
       },

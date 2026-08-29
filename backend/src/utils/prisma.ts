@@ -13,3 +13,4 @@ export function isRecordNotFoundError(err: unknown): boolean {
     err.code === "P2025"
   );
 }
+

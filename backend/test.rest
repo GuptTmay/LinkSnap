@@ -1,5 +1,10 @@
 @url = http://localhost:3000/api/v1
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI1YzlkMTYwLTY4YTItNDFlOC1hMjQzLTg1YjM3NmIxOWI0ZCIsImlhdCI6MTc4NzA0Mzg1MCwiZXhwIjoxNzg3NjQ4NjUwfQ.4HqmoM9l7pDoqc5eKiZGXaocO8cAWKlAh_OSwvBKmiQ 
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJmZTYyODRiLWIzOGEtNDBjYi1iODhiLWYyMWE2NTA0MDUzYyIsImlhdCI6MTc4NzgzNzc2MiwiZXhwIjoxNzg4NDQyNTYyfQ.QePIQGtHQj1HddIrGFxtl9kHk20pOdRw8iMxziwD-ds 
+
+###
+GET {{url}}/links/check/coo HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 
 ###
@@ -32,8 +37,6 @@ Authorization: Bearer {{token}}
         "logo": "https://example.com/logo.png"
     } 
 }
-
-
 
 
 
