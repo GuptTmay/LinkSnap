@@ -10,6 +10,7 @@ import QrCodesListPage from "@/pages/QrCodesListPage";
 import AnalyticsPage from "@/pages/AnalyticsPage";
 import SettingsPage from "@/pages/SettingsPage";
 import LinkDetailsPage from "@/pages/LinkDetailsPage";
+import QrCodeDetailsPage from "@/pages/QrCodeDetailsPage";
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
@@ -83,6 +84,16 @@ function App() {
                 <ProtectedRoute>
                   <AppLayout>
                     <QrCodesCreatePage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/qrcodes/:shortUrl/details"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <QrCodeDetailsPage />
                   </AppLayout>
                 </ProtectedRoute>
               }

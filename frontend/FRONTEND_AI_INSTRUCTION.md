@@ -35,4 +35,10 @@ instruction: you need to create a page which creates a links and redirect the us
     if the reponse is a success then redirect user to the dedicated page meant for that single link. 
         - for now redirect user to dummy /links/{dummyShortId}/details 
 
+QrCodesCreatePage: 
+    This ask user. 
+    - Long URL 
+    - Tags
+    - Title
 
+    User would be

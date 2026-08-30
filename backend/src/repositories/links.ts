@@ -7,12 +7,14 @@ export class LinksRepository {
     longUrl: string,
     userId: string,
     title?: string,
-    tags?: string[]
+    tags?: string[],
+    customization?: unknown 
   ) {
     /*
       Using Transaction
       Steps:  
         LinkId = Create Link 
+        create qrcode if customization exist
         iterate over tags: 
           Create Or Find tags   
           Create Or Find LinkTag 
@@ -33,6 +35,21 @@ export class LinksRepository {
           title: true,
         },
       });
+
+      if (customization) {
+        // Create QR code for the link
+        await tx.qrCode.create({
+          data: {
+            linkId: link.id,
+            customization,
+          },
+          select: {
+            id: true,
+            customization: true,
+            createdAt: true,
+          },
+        });
+      }
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {

@@ -33,5 +33,6 @@ export type CreateLinkPayload = {
   longUrl: string;   // valid URL
   title?: string;    // 1-64 chars
   tags?: string[];   // array of string (max 50 chars each)
+  customization?: unknown 
 }
 

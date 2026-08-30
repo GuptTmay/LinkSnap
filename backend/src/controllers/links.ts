@@ -24,6 +24,7 @@ export class LinksController {
       longUrl,
       title,
       tags,
+      customization
     } = req.validated.body;
 
     const userId = req.user!.id;
@@ -35,10 +36,11 @@ export class LinksController {
           longUrl,
           userId,
           title,
-          tags
+          tags,
+          customization
         );
 
-        return res.status(201).json(success("Link created", link));
+        return res.status(201).json(success("Created", link));
       }
 
       for (let i = 0; i < MAX_RETRIES; i++) {
