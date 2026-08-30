@@ -52,7 +52,8 @@ export class LinksController {
             longUrl,
             userId,
             title,
-            tags
+            tags,
+            customization
           );
 
           return res.status(201).json(success("Link created", link));
@@ -217,7 +218,7 @@ export class LinksController {
         return res.status(404).json(
           failure("Link not found", "NOT_FOUND", err)
         );
-      } 
+      }
       console.error("Error deleting user link:", err);
 
       return res.status(500).json(
