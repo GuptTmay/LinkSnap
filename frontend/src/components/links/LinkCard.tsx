@@ -104,13 +104,13 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, onDeleted }) => {
         <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row items-start justify-between gap-4">
           <div className="flex items-start gap-3.5 flex-1 min-w-0">
             {/* Favicon / Domain Icon */}
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-muted/30 overflow-hidden mt-0.5">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border bg-muted/30 overflow-hidden mt-0.5">
               {faviconUrl && !faviconError ? (
                 <img
                   src={faviconUrl}
                   alt={displayTitle}
                   onError={() => setFaviconError(true)}
-                  className="h-5 w-5 object-contain"
+                  className="h-10 w-10 object-contain rounded-sm"
                 />
               ) : (
                 <Globe className="h-5 w-5 text-muted-foreground" />
