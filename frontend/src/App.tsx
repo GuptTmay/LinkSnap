@@ -12,6 +12,7 @@ import SettingsPage from "@/pages/SettingsPage";
 import LinkDetailsPage from "@/pages/LinkDetailsPage";
 import LinkEditPage from "@/pages/LinkEditPage";
 import QrCodeDetailsPage from "@/pages/QrCodeDetailsPage";
+import QrCodeEditPage from "@/pages/QrCodeEditPage";
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
@@ -105,6 +106,16 @@ function App() {
                 <ProtectedRoute>
                   <AppLayout>
                     <QrCodeDetailsPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/qrcodes/:shortUrl/edit"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <QrCodeEditPage />
                   </AppLayout>
                 </ProtectedRoute>
               }
