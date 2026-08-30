@@ -10,6 +10,7 @@ import QrCodesListPage from "@/pages/QrCodesListPage";
 import AnalyticsPage from "@/pages/AnalyticsPage";
 import SettingsPage from "@/pages/SettingsPage";
 import LinkDetailsPage from "@/pages/LinkDetailsPage";
+import LinkEditPage from "@/pages/LinkEditPage";
 import QrCodeDetailsPage from "@/pages/QrCodeDetailsPage";
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
@@ -64,6 +65,16 @@ function App() {
                 <ProtectedRoute>
                   <AppLayout>
                     <LinkDetailsPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/links/:shortUrl/edit"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <LinkEditPage />
                   </AppLayout>
                 </ProtectedRoute>
               }

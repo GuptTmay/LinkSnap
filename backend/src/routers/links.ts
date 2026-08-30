@@ -2,8 +2,8 @@ import { Router } from "express";
 import { links } from "../controllers/links";
 import { qrCodeController } from "../controllers/qrcode";
 import { validate } from "../middlewares/requestValidate";
-import { CheckIfShortUrlExistSchema, CreateLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
-import { BodyValidatedRequest, ParamsValidatedRequest, ValidatedRequest } from "../types/validated-request";
+import { CheckIfShortUrlExistSchema, CreateLinkSchema, DeleteLinkParamsSchema, GetLinksQuerySchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
+import { BodyValidatedRequest, ParamsValidatedRequest, QueryValidatedRequest, ValidatedRequest } from "../types/validated-request";
 import { requireAuth } from "../middlewares/requireAuth";
 import type { ZodType } from "zod";
 import { CreateQrCodeBodySchema, CreateQrCodeParamsSchema } from "../schema/qrcode";
@@ -14,7 +14,8 @@ const router = Router();
 router.get(
   "/",
   requireAuth,
-  (req, res) => links.getLinks(req as ValidatedRequest, res)
+  validate({ query: GetLinksQuerySchema }),
+  (req, res) => links.getLinks(req as QueryValidatedRequest<typeof GetLinksQuerySchema>, res)
 );
 
 // (req, res) => linkController.createLink(req, res) this is done to avoid the loss of context of 'this' in the controller methods "this" in the controller methods will refer to the controller instance, not the router instance, which is what we want. If we just passed linkController.createLink directly, "this" would refer to the router instance, which would cause errors when trying to access properties of the controller instance.
@@ -58,6 +59,17 @@ router.get(
   "/check/:shorturl",
   validate({ params: CheckIfShortUrlExistSchema }),
   (req, res) => links.checkIfShortUrl(req as ParamsValidatedRequest<typeof CheckIfShortUrlExistSchema>, res)
+);
+
+// delete existing link
+router.delete(
+  `/:linkId`,
+  requireAuth,
+  validate({
+    params: DeleteLinkParamsSchema 
+  }),
+  (req, res) =>
+    links.deleteLink(req as ParamsValidatedRequest<typeof DeleteLinkParamsSchema>, res)
 );
 
 export default router;

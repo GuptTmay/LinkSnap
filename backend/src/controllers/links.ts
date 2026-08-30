@@ -5,8 +5,8 @@ import { ZodType } from "zod";
 
 import { linksRepository } from "../repositories/links";
 import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
-import { CheckIfShortUrlExistSchema, CreateLinkSchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
-import { BodyValidatedRequest, ParamsValidatedRequest, ValidatedRequest } from "../types/validated-request";
+import { CheckIfShortUrlExistSchema, CreateLinkSchema, DeleteLinkParamsSchema, GetLinksQuerySchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
+import { BodyValidatedRequest, ParamsValidatedRequest, QueryValidatedRequest, ValidatedRequest } from "../types/validated-request";
 import { failure, success } from "../utils/status";
 import { isRecordNotFoundError, isUniqueConstraintError } from "../utils/prisma";
 import { analyticsRepo } from '../repositories/analytics';
@@ -40,7 +40,7 @@ export class LinksController {
           customization
         );
 
-        return res.status(201).json(success("Created", link));
+        return res.status(201).json(success("Link Created Successfully", link));
       }
 
       for (let i = 0; i < MAX_RETRIES; i++) {
@@ -160,23 +160,69 @@ export class LinksController {
     }
   }
 
-  // Get all user links
-  async getLinks(req: ValidatedRequest, res: Response) {
+  async getLinks(
+    req: QueryValidatedRequest<typeof GetLinksQuerySchema>,
+    res: Response
+  ) {
     try {
-      const userId = req.user?.id;
-      const links = await linksRepository.findByUserId(userId);
+      const userId = req.user!.id;
 
-      return res.status(200).json(
-        success("Links fetched successfully", {
-          links,
-        })
+      const {
+        page,
+        limit,
+        sort,
+        qrCode,
+      } = req.validated.query;
+
+      const result = await linksRepository.findByUserId(
+        userId,
+        page,
+        limit,
+        sort,
+        qrCode
       );
+      return res.status(200).json(
+        success("Links fetched successfully", result)
+      );
+
     } catch (err) {
       console.error("Error fetching user links:", err);
 
-      return res
-        .status(500)
-        .json(failure("Failed to fetch links", "INTERNAL_ERROR"));
+      return res.status(500).json(
+        failure("Failed to fetch links", "INTERNAL_ERROR", err)
+      );
+    }
+  }
+
+  async deleteLink(
+    req: ParamsValidatedRequest<typeof DeleteLinkParamsSchema>,
+    res: Response
+  ) {
+    try {
+      const userId = req.user!.id;
+
+      const {
+        linkId,
+      } = req.validated.params;
+
+      const result = await linksRepository.delete(
+        userId, linkId,
+      );
+      return res.status(200).json(
+        success("Links deleted successfully", result)
+      );
+
+    } catch (err) {
+      if (isRecordNotFoundError(err)) {
+        return res.status(404).json(
+          failure("Link not found", "NOT_FOUND", err)
+        );
+      } 
+      console.error("Error deleting user link:", err);
+
+      return res.status(500).json(
+        failure("Failed to delete link", "INTERNAL_ERROR", err)
+      );
     }
   }
 }

@@ -8,83 +8,55 @@ export class LinksRepository {
     userId: string,
     title?: string,
     tags?: string[],
-    customization?: unknown 
+    customization?: unknown
   ) {
-    /*
-      Using Transaction
-      Steps:  
-        LinkId = Create Link 
-        create qrcode if customization exist
-        iterate over tags: 
-          Create Or Find tags   
-          Create Or Find LinkTag 
-    */
-    return prisma.$transaction(async (tx) => {
-      // create link
+    return await prisma.$transaction(async (tx) => {
+      // Create link
       const link = await tx.link.create({
         data: {
           shortUrl,
           longUrl,
           userId,
-          title,
+          title
         },
         select: {
           id: true,
-          shortUrl: true,
           longUrl: true,
-          title: true,
-        },
+          shortUrl: true,
+          title: true
+        }
       });
 
+      // if customization create qrcode with linkid.
       if (customization) {
-        // Create QR code for the link
         await tx.qrCode.create({
-          data: {
-            linkId: link.id,
-            customization,
-          },
-          select: {
-            id: true,
-            customization: true,
-            createdAt: true,
-          },
+          data: { linkId: link.id, customization }
         });
       }
 
       if (tags && tags.length > 0) {
-        for (const tag of tags) {
-          // Find or create user's tag
-          const currTag = await tx.tag.upsert({
-            where: {
-              userId_name: { userId, name: tag },
-            },
-            update: {},
-            create: {
-              userId,
-              name: tag,
-            },
-          });
+        // dedup tags. 
+        const uniqueTags = [...new Set(tags)];
 
+        // add tags to tags tables
+        await tx.tag.createMany({
+          data: uniqueTags.map((name) => ({ userId, name })),
+          skipDuplicates: true
+        })
 
-          // Attach tag to link
-          await tx.linkTag.upsert({
-            where: {
-              linkId_tagId: {
-                linkId: link.id,
-                tagId: currTag.id,
-              },
-            },
-            update: {},
-            create: {
-              linkId: link.id,
-              tagId: currTag.id,
-            },
-          });
+        const tagRows = await tx.tag.findMany({
+          where: { userId, name: { in: uniqueTags } },
+          select: { id: true }
+        });
 
-        }
+        // add linkTags for connections
+        await tx.linkTag.createMany({
+          data: tagRows.map((tag) => ({ tagId: tag.id, linkId: link.id })),
+          skipDuplicates: true
+        });
       }
       return link;
-    });
+    })
   }
 
   // get single Link  shorturl
@@ -124,22 +96,84 @@ export class LinksRepository {
     });
   }
 
-  // Get all user links 
-  async findByUserId(userId: string) {
-    return await prisma.link.findMany({
-      where: {
-        userId,
+  async findByUserId(
+    userId: string,
+    page: number,
+    limit: number,
+    sort: "asc" | "desc",
+    qrCode?: boolean
+  ) {
+    const skip = (page - 1) * limit;
+    const where = {
+      userId,
+
+      ...(qrCode !== undefined && {
+        qrCode: qrCode
+          ? { isNot: null }
+          : { is: null },
+      }),
+    };
+
+    const [links, total] = await prisma.$transaction([
+      prisma.link.findMany({
+        where,
+        skip,
+        take: limit,
+
+        orderBy: {
+          createdAt: sort,
+        },
+
+        select: {
+          id: true,
+          shortUrl: true,
+          longUrl: true,
+          title: true,
+          createdAt: true,
+          updatedAt: true,
+
+          qrCode: {
+            select: {
+              id: true,
+              customization: true,
+              createdAt: true,
+            },
+          },
+
+          tags: {
+            select: {
+              tag: {
+                select: {
+                  id: true,
+                  name: true,
+                  createdAt: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+
+      prisma.link.count({
+        where,
+      }),
+    ]);
+
+    return {
+      links: links.map((link) => ({
+        ...link,
+        tags: link.tags.map(({ tag }) => tag),
+      })),
+
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page * limit < total,
+        hasPreviousPage: page > 1,
       },
-      orderBy: {
-        createdAt: "desc",
-      },
-      select: {
-        id: true,
-        shortUrl: true,
-        longUrl: true,
-        createdAt: true,
-      },
-    });
+    };
   }
 
   async findLinksWithQrCodes(userId: string) {
@@ -167,6 +201,15 @@ export class LinksRepository {
         createdAt: "desc",
       },
     });
+  }
+
+  async delete(userId: string, linkId: string) {
+    return prisma.link.delete({
+      where: { userId, id: linkId },
+      select: {
+        id: true
+      }
+    })
   }
 }
 

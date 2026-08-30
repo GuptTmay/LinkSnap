@@ -9,7 +9,7 @@ import tagsRouter from "./routers/tags";
 import { API_PREFIX } from "./config";
 import { errorHandler } from "./middlewares/errorHandler";
 
-const app = express();
+export const app = express();
 
 app.use(
   cors({

@@ -10,7 +10,7 @@ import { QrCodeDialog } from "@/components/qrcode/QrCodeDialog";
 import { Link2, QrCode as QrIcon, ArrowRight, Copy, Check, ExternalLink } from "lucide-react";
 import { ApiError } from "@/types/error";
 import { toast } from "sonner";
-import type { ShortLink } from "@/types/link";
+import type { CreateLinkResponse, Link } from "@/types/api";
 
 export const Home: React.FC = () => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL || "";
@@ -23,7 +23,7 @@ export const Home: React.FC = () => {
   const [shortError, setShortError] = useState("");
   const [qrError, setQrError] = useState("");
 
-  const [createdLinkResult, setCreatedLinkResult] = useState<ShortLink | null>(null);
+  const [createdLinkResult, setCreatedLinkResult] = useState<Link | null>(null);
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
 
   // Dialog State
@@ -59,8 +59,8 @@ export const Home: React.FC = () => {
     setIsShortening(true);
 
     try {
-      const body = await createLink({ longUrl: shortUrlInput.trim() });
-      const linkData: ShortLink = body.data;
+      const body: CreateLinkResponse = await createLink({ longUrl: shortUrlInput.trim() });
+      const linkData: Link = body.data;
       setCreatedLinkResult(linkData);
       toast.success("Short link created successfully!");
       setShortUrlInput("");
