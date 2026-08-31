@@ -50,14 +50,7 @@ export const QrCodeCard: React.FC<QrCodeCardProps> = ({ link, onDeleted }) => {
 
   // Card Navigation
   const handleCardClick = () => {
-    navigate(`/qrcodes/${link.shortUrl}/details`, {
-      state: {
-        shortUrl: link.shortUrl,
-        longUrl: link.longUrl,
-        title: link.title,
-        tags: link.tags?.map((t) => t.name) || [],
-      },
-    });
+    navigate(`/qrcodes/${link.shortUrl}/details`);
   };
 
   const handleCardKeyDown = (e: React.KeyboardEvent) => {

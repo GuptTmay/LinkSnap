@@ -1,40 +1,63 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import QRCode from "qrcode";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { QrCode, ExternalLink, Tag as TagIcon, Download, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
-
-interface QrCodeDetailsState {
-  shortUrl?: string;
-  longUrl?: string;
-  title?: string;
-  tags?: string[];
-}
+import { getLinkByShortUrl } from "@/api/links.api";
+import { ApiError } from "@/types/error";
+import type { LinkWithRelations } from "@/types/api";
 
 export const QrCodeDetailsPage: React.FC = () => {
   const { shortUrl } = useParams<{ shortUrl: string }>();
-  const location = useLocation();
   const navigate = useNavigate();
-
-  const stateData = (location.state as QrCodeDetailsState) || {};
-  const details: QrCodeDetailsState = {
-    shortUrl: shortUrl || stateData.shortUrl || "",
-    longUrl: stateData.longUrl || "",
-    title: stateData.title || "",
-    tags: stateData.tags || [],
-  };
-
-  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL || "";
-  const fullShortUrl = details.shortUrl
-    ? `${BACKEND_BASE_URL}/${details.shortUrl}`
-    : "";
-
+  const [details, setDetails] = useState<LinkWithRelations | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [copied, setCopied] = useState<boolean>(false);
 
-  // Generate QR Code image client-side
+  useEffect(() => {
+    if (!shortUrl) {
+      setIsLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    const fetchLinkDetails = async () => {
+      try {
+        setIsLoading(true);
+        const res = await getLinkByShortUrl(shortUrl);
+        if (isMounted) {
+          setDetails(res.data);
+        }
+      } catch (error) {
+        if (!isMounted) return;
+
+        if (error instanceof ApiError) {
+          toast.error(error.message);
+        } else {
+          toast.error("Failed to load QR code details.");
+        }
+        navigate("/qrcodes");
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchLinkDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [shortUrl, navigate]);
+
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL || "";
+  const fullShortUrl = details?.shortUrl ? `${BACKEND_BASE_URL}/${details.shortUrl}` : "";
+
   useEffect(() => {
     if (!fullShortUrl) return;
 
@@ -43,19 +66,17 @@ export const QrCodeDetailsPage: React.FC = () => {
       .catch(() => toast.error("Failed to render QR Code image."));
   }, [fullShortUrl]);
 
-  // Handle Download QR PNG
   const handleDownload = () => {
     if (!qrDataUrl) return;
     const a = document.createElement("a");
     a.href = qrDataUrl;
-    a.download = `linksnap-qrcode-${details.shortUrl || "download"}.png`;
+    a.download = `linksnap-qrcode-${details?.shortUrl || "download"}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     toast.success("QR Code image downloaded!");
   };
 
-  // Handle Copy Short URL
   const handleCopy = async () => {
     if (!fullShortUrl) return;
     try {
@@ -68,6 +89,28 @@ export const QrCodeDetailsPage: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">QR Code Details</h1>
+          <p className="text-sm text-muted-foreground">Loading QR code details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!details) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">QR Code Details</h1>
+          <p className="text-sm text-muted-foreground">No QR code details available.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -78,7 +121,6 @@ export const QrCodeDetailsPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
-        {/* Scannable QR Code Image Card */}
         <Card className="shadow-sm border-muted/60 flex flex-col items-center justify-center p-6 text-center">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg font-bold">Scannable QR Code</CardTitle>
@@ -111,7 +153,6 @@ export const QrCodeDetailsPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Link & QR Configuration Details */}
         <Card className="shadow-sm border-muted/60">
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -170,11 +211,11 @@ export const QrCodeDetailsPage: React.FC = () => {
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
                   {details.tags.map((tag) => (
                     <span
-                      key={tag}
+                      key={tag.id || tag.name}
                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-medium"
                     >
                       <TagIcon className="h-3 w-3" />
-                      {tag}
+                      {tag.name}
                     </span>
                   ))}
                 </div>

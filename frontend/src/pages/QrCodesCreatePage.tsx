@@ -56,12 +56,7 @@ export const QrCodesCreatePage: React.FC = () => {
       const res: CreateLinkResponse = await createLink(payload);
 
       toast.success(res.message || "QR Code generated successfully!");
-      navigate(`/qrcodes/${res.data.shortUrl}/details`, {
-        state: {
-          ...res.data,
-          tags: payload.tags,
-        },
-      });
+      navigate(`/qrcodes/${res.data.shortUrl}/details`);
     } catch (err) {
       if (err instanceof ApiError) {
         toast.error(err.message);
