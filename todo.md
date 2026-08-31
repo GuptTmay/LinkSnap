@@ -39,15 +39,23 @@
             Edit LinkListPage.tsx to show all user links.   
             keep qrCode: false in getLinks payload. 
             Make it look beauity full.  
+   **Done** 
 
 
 - REFACTOR Links and Qrcodes details page. 
     - get link details. 
     - get QrCode Details. 
+    
 
 - ADD edit Links and qrcode pages.  
     - patch links.
     - patch qrcode. -> patch links.  
+
+- FEAT Show Analytics in Details page. 
+
+- REFACTOR: Overhaul Frontend
+    - Make it look beautiful. 
+
 
  ## Future Todo
 1. Feat: Integration Test for Analytics Repo

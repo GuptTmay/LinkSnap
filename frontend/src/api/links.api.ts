@@ -1,4 +1,4 @@
-import type { CheckIfShortUrlExistResponse, CreateLinkPayload, CreateLinkResponse, DeleteLinkResponse, GetLinksPayload, GetLinksResponse } from "@/types/api";
+import type { CheckIfShortUrlExistResponse, CreateLinkPayload, CreateLinkResponse, DeleteLinkResponse, GetLinkByShortUrlResponse, GetLinksPayload, GetLinksResponse } from "@/types/api";
 import { apiRequest } from "./client";
 
 // Create authenticated User Link
@@ -32,5 +32,11 @@ export const checkIfShortUrlExist = async (shorturl: string): Promise<CheckIfSho
 export const deleteLinks = async (linkId: string): Promise<DeleteLinkResponse> => {
   return apiRequest(`/links/${linkId}`, {
     method: "DELETE"
+  });
+}
+
+export const getLinkByShortUrl = async (shortUrl: string): Promise<GetLinkByShortUrlResponse> => {
+  return apiRequest(`/links/${shortUrl}`, {
+    method: "GET"
   });
 }

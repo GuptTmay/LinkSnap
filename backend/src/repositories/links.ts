@@ -210,6 +210,47 @@ export class LinksRepository {
       }
     })
   }
+
+  // get single Link by userId and shorturl
+  async findByUserIdAndShortUrl(userId: string, shortUrl: string) {
+    const link = await prisma.link.findUniqueOrThrow({
+      where: { shortUrl, userId },
+      select: {
+        id: true,
+        shortUrl: true,
+        longUrl: true,
+        title: true,
+        createdAt: true,
+        updatedAt: true,
+
+        qrCode: {
+          select: {
+            id: true,
+            customization: true,
+            createdAt: true,
+          },
+        },
+
+        tags: {
+          select: {
+            tag: {
+              select: {
+                id: true,
+                name: true,
+                createdAt: true,
+              },
+            },
+          },
+        },
+      }
+    });
+
+    return {
+      ...link,
+      tags: link.tags.map(({ tag }) => tag),
+    };
+  }
+
 }
 
 export const linksRepository = new LinksRepository();

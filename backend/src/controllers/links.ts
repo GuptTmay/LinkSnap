@@ -5,7 +5,7 @@ import { ZodType } from "zod";
 
 import { linksRepository } from "../repositories/links";
 import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
-import { CheckIfShortUrlExistSchema, CreateLinkSchema, DeleteLinkParamsSchema, GetLinksQuerySchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
+import { CheckIfShortUrlExistSchema, CreateLinkSchema, DeleteLinkParamsSchema, FindByUserIdAndShortUrlSchema, GetLinksQuerySchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
 import { BodyValidatedRequest, ParamsValidatedRequest, QueryValidatedRequest, ValidatedRequest } from "../types/validated-request";
 import { failure, success } from "../utils/status";
 import { isRecordNotFoundError, isUniqueConstraintError } from "../utils/prisma";
@@ -224,6 +224,22 @@ export class LinksController {
       return res.status(500).json(
         failure("Failed to delete link", "INTERNAL_ERROR", err)
       );
+    }
+  }
+
+  async findByUserIdAndShortUrl(req: ParamsValidatedRequest<typeof FindByUserIdAndShortUrlSchema>, res: Response) {
+    const { shorturl } = req.validated.params;
+    const userId = req.user!.id;
+    try {
+      const link = await linksRepository.findByUserIdAndShortUrl(userId, shorturl);
+      console.log(link);
+      return res.status(200).json(success("Link fetched successfully", link));
+    } catch (err) {
+      if (isRecordNotFoundError(err)) {
+        return res.status(404).json(failure("Link not found", "NOT_FOUND", err));
+      }
+      console.error(err);
+      return res.status(500).json(failure("Internal server error", "INTERNAL_ERROR", err));
     }
   }
 }

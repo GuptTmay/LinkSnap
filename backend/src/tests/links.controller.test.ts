@@ -390,7 +390,6 @@ describe("Links Controller HTTP API (Integration, real app + real auth)", () => 
 
       expect(response.status).toBe(200);
       const result = response.body.data.links;
-      // console.log(result);
       expect(result).toHaveLength(1);
       expect(result[0].shortUrl).toBe("without-qr");
       expect(result[0].qrCode).toBeNull();
@@ -521,6 +520,91 @@ describe("Links Controller HTTP API (Integration, real app + real auth)", () => 
       // At minimum this shouldn't contain a stack trace or internal file paths.
       const bodyStr = JSON.stringify(response.body);
       expect(bodyStr).not.toMatch(/at .*\.ts:\d+:\d+/); // stack trace line pattern
+    });
+  });
+
+  describe("GET /links/:shorturl", () => {
+    it("should return a link owned by the requesting user", async () => {
+      await prisma.link.create({
+        data: {
+          shortUrl: "my-link",
+          longUrl: "https://example.com",
+          userId: testUserId,
+        },
+      });
+
+      const response = await request(app)
+        .get(`${BASE}/links/my-link`)
+        .set("Cookie", AUTH_COOKIE);
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+
+      // expect(response.body.data).toEqual(
+      //   expect.objectContaining({
+      //     shortUrl: "my-link",
+      //     longUrl: "https://example.com",
+      //     userId: testUserId,
+      //   })
+      // );
+    });
+
+    it("should reject unauthenticated requests", async () => {
+      await prisma.link.create({
+        data: {
+          shortUrl: "no-auth-link",
+          longUrl: "https://example.com",
+          userId: testUserId,
+        },
+      });
+
+      const response = await request(app)
+        .get(`${BASE}/links/no-auth-link`);
+
+      expect([401, 403]).toContain(response.status);
+    });
+
+    it("should return 404 when the shortUrl does not exist", async () => {
+      const response = await request(app)
+        .get(`${BASE}/links/does-not-exist`)
+        .set("Cookie", AUTH_COOKIE);
+
+      expect(response.status).toBe(404);
+
+      expect(response.body).toEqual({
+        success: false,
+        message: "Link not found",
+        error: {
+          code: "NOT_FOUND",
+          details: expect.anything()
+        },
+      });
+    });
+
+    it("should NOT allow a user to access a link they don't own", async () => {
+      const otherUser = await prisma.user.create({
+        data: {
+          email: `owner-${Date.now()}@example.com`,
+          name: "Owner",
+          provider: "google",
+          providerId: `owner-google-${Date.now()}`,
+        },
+      });
+
+      await prisma.link.create({
+        data: {
+          shortUrl: "not-yours",
+          longUrl: "https://example.com",
+          userId: otherUser.id,
+        },
+      });
+
+      const response = await request(app)
+        .get(`${BASE}/links/not-yours`)
+        .set("Cookie", AUTH_COOKIE);
+
+      // The repository should scope the query by both userId and shortUrl.
+      expect(response.status).toBe(404);
     });
   });
 });

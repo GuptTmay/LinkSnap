@@ -2,7 +2,7 @@ import { Router } from "express";
 import { links } from "../controllers/links";
 import { qrCodeController } from "../controllers/qrcode";
 import { validate } from "../middlewares/requestValidate";
-import { CheckIfShortUrlExistSchema, CreateLinkSchema, DeleteLinkParamsSchema, GetLinksQuerySchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
+import { CheckIfShortUrlExistSchema, CreateLinkSchema, DeleteLinkParamsSchema, FindByUserIdAndShortUrlSchema, GetLinksQuerySchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
 import { BodyValidatedRequest, ParamsValidatedRequest, QueryValidatedRequest, ValidatedRequest } from "../types/validated-request";
 import { requireAuth } from "../middlewares/requireAuth";
 import type { ZodType } from "zod";
@@ -70,6 +70,16 @@ router.delete(
   }),
   (req, res) =>
     links.deleteLink(req as ParamsValidatedRequest<typeof DeleteLinkParamsSchema>, res)
+);
+
+router.get(
+  `/:shorturl`,
+  requireAuth,
+  validate({
+    params: FindByUserIdAndShortUrlSchema
+  }),
+  (req, res) =>
+    links.findByUserIdAndShortUrl(req as ParamsValidatedRequest<typeof FindByUserIdAndShortUrlSchema>, res)
 );
 
 export default router;

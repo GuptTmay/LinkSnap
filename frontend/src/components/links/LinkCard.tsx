@@ -42,14 +42,7 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, onDeleted }) => {
 
   // Card Navigation
   const handleCardClick = () => {
-    navigate(`/links/${link.shortUrl}/details`, {
-      state: {
-        shortUrl: link.shortUrl,
-        longUrl: link.longUrl,
-        title: link.title,
-        tags: link.tags?.map((t) => t.name) || [],
-      },
-    });
+    navigate(`/links/${link.shortUrl}/details`);
   };
 
   // Short URL Click

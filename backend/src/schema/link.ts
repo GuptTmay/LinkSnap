@@ -29,6 +29,10 @@ export const RedirectLinkSchema = z.object({
   shorturl: z.string().min(1).max(20),
 });
 
+export const FindByUserIdAndShortUrlSchema = z.object({
+  shorturl: z.string().min(1).max(20),
+});
+
 export const CheckIfShortUrlExistSchema = z.object({
   shorturl: z.string().min(1).max(20),
 });

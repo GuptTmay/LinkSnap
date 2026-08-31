@@ -115,14 +115,7 @@ export const LinksCreatePage: React.FC = () => {
       const res: CreateLinkResponse = await createLink(payload);
 
       toast.success(res.message);
-      // console.log(res.data);
-      // console.log(payload.tags);
-      navigate(`/links/${res.data.shortUrl}/details`, {
-        state: {
-          ...res.data,
-          tags: payload.tags,
-        },
-      });
+      navigate(`/links/${res.data.shortUrl}/details`);
     } catch (err) {
       if (err instanceof ApiError) {
         toast.error(err.message);

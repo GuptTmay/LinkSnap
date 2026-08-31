@@ -1,33 +1,81 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link2, ExternalLink, Tag as TagIcon } from "lucide-react";
-
-interface LinkDetailsState {
-  shortUrl?: string;
-  longUrl?: string;
-  title?: string;
-  tags?: string[];
-}
+import { getLinkByShortUrl } from "@/api/links.api";
+import { ApiError } from "@/types/error";
+import type { LinkWithRelations } from "@/types/api";
+import { toast } from "sonner";
 
 export const LinkDetailsPage: React.FC = () => {
   const { shortUrl } = useParams<{ shortUrl: string }>();
-  const location = useLocation();
   const navigate = useNavigate();
+  const [details, setDetails] = useState<LinkWithRelations | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const stateData = (location.state as LinkDetailsState) || {};
-  const [details] = useState<LinkDetailsState>({
-    shortUrl: shortUrl || stateData.shortUrl || "",
-    longUrl: stateData.longUrl || "",
-    title: stateData.title || "",
-    tags: stateData.tags || [],
-  });
+  useEffect(() => {
+    if (!shortUrl) {
+      setIsLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    const fetchLinkDetails = async () => {
+      try {
+        setIsLoading(true);
+        const res = await getLinkByShortUrl(shortUrl);
+        if (isMounted) {
+          setDetails(res.data);
+        }
+      } catch (error) {
+        if (!isMounted) return;
+
+        if (error instanceof ApiError) {
+          toast.error(error.message);
+        } else {
+          toast.error("Failed to load link details.");
+        }
+        navigate("/links");
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchLinkDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [shortUrl, navigate]);
 
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL || "";
-  const fullShortUrl = details.shortUrl
-    ? `${BACKEND_BASE_URL}/${details.shortUrl}`
-    : "";
+  const fullShortUrl = details?.shortUrl ? `${BACKEND_BASE_URL}/${details.shortUrl}` : "";
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Link Details</h1>
+          <p className="text-sm text-muted-foreground">Loading link details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!details) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Link Details</h1>
+          <p className="text-sm text-muted-foreground">No link details available.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -92,11 +140,11 @@ export const LinkDetailsPage: React.FC = () => {
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {details.tags.map((tag) => (
                   <span
-                    key={tag}
+                    key={tag.id || tag.name}
                     className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-medium"
                   >
                     <TagIcon className="h-3 w-3" />
-                    {tag}
+                    {tag.name}
                   </span>
                 ))}
               </div>
