@@ -17,7 +17,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-import { getLinkByShortUrl } from "@/api/links.api";
+import { deleteLinks, getLinkByShortUrl } from "@/api/links.api";
 import { ApiError } from "@/types/error";
 import type { LinkWithRelations } from "@/types/api";
 import { toast } from "sonner";
@@ -27,7 +27,7 @@ export const LinkDetailsPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [details, setDetails] = useState<LinkWithRelations | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!shortUrl);
   const [copied, setCopied] = useState(false);
 
   const BACKEND_BASE_URL =
@@ -35,7 +35,6 @@ export const LinkDetailsPage: React.FC = () => {
 
   useEffect(() => {
     if (!shortUrl) {
-      setIsLoading(false);
       return;
     }
 
@@ -78,10 +77,10 @@ export const LinkDetailsPage: React.FC = () => {
 
   const formattedDate = details?.createdAt
     ? new Date(details.createdAt).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      })
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
     : "";
 
   const handleCopy = async () => {
@@ -95,6 +94,27 @@ export const LinkDetailsPage: React.FC = () => {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error("Failed to copy URL");
+    }
+  };
+
+  const handleEdit = () => {
+    if (!details?.shortUrl) return;
+    navigate(`/links/${details.shortUrl}/edit`);
+  };
+
+  const handleDelete = async () => {
+    if (!details?.id) return;
+
+    try {
+      const res = await deleteLinks(details.id);
+      toast.success(res.message || "Link deleted successfully");
+      navigate("/links");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to delete link.");
+      }
     }
   };
 
@@ -177,17 +197,38 @@ export const LinkDetailsPage: React.FC = () => {
       {/* Main Card */}
       <Card className="overflow-hidden shadow-sm">
         <CardHeader className="border-b bg-muted/20">
-          <CardTitle className="text-lg">
-            Link Information
-          </CardTitle>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <CardTitle className="text-lg">Link Information</CardTitle>
+              <CardDescription className="mt-1">
+                Details about your shortened URL and its destination.
+              </CardDescription>
+            </div>
 
-          <CardDescription>
-            Details about your shortened URL and its destination.
-          </CardDescription>
+            {/* Actions */}
+            <div className="flex w-full gap-2 sm:w-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEdit}
+                className="flex-1 sm:flex-none"
+              >
+                Edit
+              </Button>
+
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDelete}
+                className="flex-1 sm:flex-none"
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
         </CardHeader>
 
         <CardContent className="space-y-6 p-4 sm:p-6">
-
           {/* Short URL */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">

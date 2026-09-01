@@ -18,7 +18,7 @@ import {
   Check,
 } from "lucide-react";
 import { toast } from "sonner";
-import { getLinkByShortUrl } from "@/api/links.api";
+import { deleteLinks, getLinkByShortUrl } from "@/api/links.api";
 import { ApiError } from "@/types/error";
 import type { LinkWithRelations } from "@/types/api";
 
@@ -27,13 +27,12 @@ export const QrCodeDetailsPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [details, setDetails] = useState<LinkWithRelations | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!shortUrl);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!shortUrl) {
-      setIsLoading(false);
       return;
     }
 
@@ -116,6 +115,27 @@ export const QrCodeDetailsPage: React.FC = () => {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error("Failed to copy URL");
+    }
+  };
+
+  const handleEdit = () => {
+    if (!details?.shortUrl) return;
+    navigate(`/qrcodes/${details.shortUrl}/edit`);
+  };
+
+  const handleDelete = async () => {
+    if (!details?.id) return;
+
+    try {
+      const res = await deleteLinks(details.id);
+      toast.success(res.message || "QR code deleted successfully");
+      navigate("/qrcodes");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to delete QR code.");
+      }
     }
   };
 
@@ -341,22 +361,28 @@ export const QrCodeDetailsPage: React.FC = () => {
 
             {/* Footer */}
             <div className="flex flex-col gap-3 border-t pt-5 sm:flex-row sm:justify-between">
-              <Button
-                variant="outline"
-                onClick={() => navigate("/qrcodes")}
-                className="w-full sm:w-auto"
-              >
-                Back to QR Codes
-              </Button>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button variant="outline" onClick={() => navigate("/qrcodes")} className="w-full sm:w-auto">
+                  Back to QR Codes
+                </Button>
+                <Button variant="outline" onClick={handleEdit} className="w-full sm:w-auto">
+                  Edit
+                </Button>
+              </div>
 
-              <Button
-                onClick={handleDownload}
-                disabled={!qrDataUrl}
-                className="w-full gap-2 sm:w-auto"
-              >
-                <Download className="h-4 w-4" />
-                Download
-              </Button>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button variant="destructive" onClick={handleDelete} className="w-full sm:w-auto">
+                  Delete
+                </Button>
+                <Button
+                  onClick={handleDownload}
+                  disabled={!qrDataUrl}
+                  className="w-full gap-2 sm:w-auto"
+                >
+                  <Download className="h-4 w-4" />
+                  Download
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
