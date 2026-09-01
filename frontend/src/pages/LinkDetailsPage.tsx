@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link2, ExternalLink, Tag as TagIcon } from "lucide-react";
+import {
+  Link2,
+  ExternalLink,
+  Tag as TagIcon,
+  Calendar,
+  ArrowLeft,
+  Copy,
+  Check,
+} from "lucide-react";
 import { getLinkByShortUrl } from "@/api/links.api";
 import { ApiError } from "@/types/error";
 import type { LinkWithRelations } from "@/types/api";
@@ -11,8 +25,13 @@ import { toast } from "sonner";
 export const LinkDetailsPage: React.FC = () => {
   const { shortUrl } = useParams<{ shortUrl: string }>();
   const navigate = useNavigate();
+
   const [details, setDetails] = useState<LinkWithRelations | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  const BACKEND_BASE_URL =
+    import.meta.env.VITE_BACKEND_BASE_URL || "";
 
   useEffect(() => {
     if (!shortUrl) {
@@ -24,19 +43,20 @@ export const LinkDetailsPage: React.FC = () => {
 
     const fetchLinkDetails = async () => {
       try {
-        setIsLoading(true);
         const res = await getLinkByShortUrl(shortUrl);
+
         if (isMounted) {
           setDetails(res.data);
         }
       } catch (error) {
         if (!isMounted) return;
 
-        if (error instanceof ApiError) {
-          toast.error(error.message);
-        } else {
-          toast.error("Failed to load link details.");
-        }
+        toast.error(
+          error instanceof ApiError
+            ? error.message
+            : "Failed to load link details."
+        );
+
         navigate("/links");
       } finally {
         if (isMounted) {
@@ -52,110 +72,226 @@ export const LinkDetailsPage: React.FC = () => {
     };
   }, [shortUrl, navigate]);
 
-  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL || "";
-  const fullShortUrl = details?.shortUrl ? `${BACKEND_BASE_URL}/${details.shortUrl}` : "";
+  const fullShortUrl = details?.shortUrl
+    ? `${BACKEND_BASE_URL}/${details.shortUrl}`
+    : "";
+
+  const formattedDate = details?.createdAt
+    ? new Date(details.createdAt).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "";
+
+  const handleCopy = async () => {
+    if (!fullShortUrl) return;
+
+    try {
+      await navigator.clipboard.writeText(fullShortUrl);
+      setCopied(true);
+      toast.success("Short URL copied");
+
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy URL");
+    }
+  };
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Link Details</h1>
-          <p className="text-sm text-muted-foreground">Loading link details...</p>
+      <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-6 sm:px-6">
+        <div className="space-y-2">
+          <div className="h-8 w-40 animate-pulse rounded-md bg-muted" />
+          <div className="h-4 w-64 animate-pulse rounded-md bg-muted" />
         </div>
+
+        <Card>
+          <CardContent className="space-y-6 p-6">
+            <div className="h-6 w-1/2 animate-pulse rounded bg-muted" />
+            <div className="h-20 animate-pulse rounded bg-muted" />
+            <div className="h-20 animate-pulse rounded bg-muted" />
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (!details) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Link Details</h1>
-          <p className="text-sm text-muted-foreground">No link details available.</p>
-        </div>
+      <div className="mx-auto max-w-4xl px-4 py-10 text-center">
+        <Link2 className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
+
+        <h1 className="text-xl font-semibold">
+          Link not found
+        </h1>
+
+        <p className="mt-1 text-sm text-muted-foreground">
+          The requested link could not be found.
+        </p>
+
+        <Button
+          className="mt-6"
+          variant="outline"
+          onClick={() => navigate("/links")}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Links
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Link Details</h1>
-        <p className="text-sm text-muted-foreground">
-          View details of your created short link.
-        </p>
+    <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-6 sm:px-6 lg:py-8">
+
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
+          <div className="mt-1 rounded-lg bg-blue-500/10 p-2">
+            <Link2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          </div>
+
+          <div className="min-w-0">
+            <h1 className="truncate text-2xl font-bold tracking-tight sm:text-3xl">
+              {details.title || "Link Details"}
+            </h1>
+
+            <p className="mt-1 text-sm text-muted-foreground">
+              View and manage your short link.
+            </p>
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full sm:w-auto"
+          onClick={() => navigate("/links")}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Links
+        </Button>
       </div>
 
-      <Card className="max-w-2xl shadow-sm border-muted/60">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Link2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            <CardTitle>{details.title || details.shortUrl || "Short Link Details"}</CardTitle>
-          </div>
+      {/* Main Card */}
+      <Card className="overflow-hidden shadow-sm">
+        <CardHeader className="border-b bg-muted/20">
+          <CardTitle className="text-lg">
+            Link Information
+          </CardTitle>
+
           <CardDescription>
-            Overview of the short link details.
+            Details about your shortened URL and its destination.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Short URL
-            </span>
-            <div className="mt-1 flex items-center gap-2">
+
+        <CardContent className="space-y-6 p-4 sm:p-6">
+
+          {/* Short URL */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Short URL
+              </span>
+
+              {formattedDate && (
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Calendar className="h-3.5 w-3.5" />
+                  {formattedDate}
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2 rounded-lg border bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between">
               <a
-                href={fullShortUrl || "#"}
+                href={fullShortUrl}
                 target="_blank"
-                rel="noreferrer"
-                className="text-base font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                rel="noopener noreferrer"
+                className="flex min-w-0 items-center gap-2 text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400"
               >
-                {details.shortUrl ? details.shortUrl : "N/A"}
+                <span className="truncate">
+                  {fullShortUrl}
+                </span>
+
                 <ExternalLink className="h-4 w-4 shrink-0" />
               </a>
+
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleCopy}
+                className="w-full shrink-0 sm:w-auto"
+              >
+                {copied ? (
+                  <Check className="mr-2 h-4 w-4" />
+                ) : (
+                  <Copy className="mr-2 h-4 w-4" />
+                )}
+
+                {copied ? "Copied" : "Copy"}
+              </Button>
             </div>
           </div>
 
-          <div>
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Destination URL (Long URL)
+          {/* Destination */}
+          <div className="space-y-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Destination URL
             </span>
-            <p className="mt-1 text-sm font-mono bg-muted/40 p-2.5 rounded-md border break-all">
-              {details.longUrl || "N/A"}
-            </p>
+
+            <a
+              href={details.longUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-start justify-between gap-3 rounded-lg border bg-muted/30 p-3 transition-colors hover:bg-muted/50"
+            >
+              <span className="min-w-0 break-all font-mono text-sm text-foreground">
+                {details.longUrl}
+              </span>
+
+              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+            </a>
           </div>
 
+          {/* Title */}
           {details.title && (
-            <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <div className="space-y-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Title
               </span>
-              <p className="mt-1 text-sm text-foreground">{details.title}</p>
+
+              <p className="rounded-lg border bg-muted/30 p-3 text-sm">
+                {details.title}
+              </p>
             </div>
           )}
 
-          {details.tags && details.tags.length > 0 && (
-            <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Tags
-              </span>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
+          {/* Tags */}
+          <div className="space-y-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Tags
+            </span>
+
+            {details.tags?.length ? (
+              <div className="flex flex-wrap gap-2">
                 {details.tags.map((tag) => (
                   <span
                     key={tag.id || tag.name}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-medium"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400"
                   >
-                    <TagIcon className="h-3 w-3" />
+                    <TagIcon className="h-3.5 w-3.5" />
                     {tag.name}
                   </span>
                 ))}
               </div>
-            </div>
-          )}
-
-          <div className="pt-4 border-t flex gap-3">
-            <Button variant="outline" size="sm" onClick={() => navigate("/links")}>
-              Back to Links
-            </Button>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No tags added to this link.
+              </p>
+            )}
           </div>
+
         </CardContent>
       </Card>
     </div>
