@@ -20,10 +20,21 @@ export const UpdateLinkParamsSchema = z.object({
 export const UpdateLinkBodySchema = z.object({
   shortUrl: z
     .string()
-    .min(LINK.MIN_LINK_ID_LENGTH)
-    .max(LINK.MAX_LINK_ID_LENGTH),
+    .min(1)
+    .max(20).optional(),
   longUrl: z.url().optional(),
-});
+  title: z.string().trim().min(1).max(64).optional(),
+  tags: z.array(z.string().trim().min(1).max(50)).optional(),
+}).refine(
+  (data) =>
+    data.shortUrl !== undefined ||
+    data.longUrl !== undefined ||
+    data.title !== undefined ||
+    data.tags !== undefined,
+  {
+    message: "At least one field must be provided",
+  }
+);;
 
 export const RedirectLinkSchema = z.object({
   shorturl: z.string().min(1).max(20),

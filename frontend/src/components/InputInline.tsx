@@ -4,7 +4,6 @@ import { useState } from "react"
 
 export function InputInline() {
   const [cnt, setCnt] = useState(0); 
-  console.log(cnt);
   return (
     <Field orientation="horizontal">
       <Input type="number" placeholder="Enter Number..." onChange={(e) => setCnt(Number(e.target.value))} />

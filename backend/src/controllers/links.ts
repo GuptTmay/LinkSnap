@@ -232,7 +232,6 @@ export class LinksController {
     const userId = req.user!.id;
     try {
       const link = await linksRepository.findByUserIdAndShortUrl(userId, shorturl);
-      console.log(link);
       return res.status(200).json(success("Link fetched successfully", link));
     } catch (err) {
       if (isRecordNotFoundError(err)) {

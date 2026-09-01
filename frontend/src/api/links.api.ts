@@ -1,4 +1,4 @@
-import type { CheckIfShortUrlExistResponse, CreateLinkPayload, CreateLinkResponse, DeleteLinkResponse, GetLinkByShortUrlResponse, GetLinksPayload, GetLinksResponse } from "@/types/api";
+import type { CheckIfShortUrlExistResponse, CreateLinkPayload, CreateLinkResponse, DeleteLinkResponse, GetLinkByShortUrlResponse, GetLinksPayload, GetLinksResponse, UpdateLinkPayload, UpdateLinkResponse } from "@/types/api";
 import { apiRequest } from "./client";
 
 // Create authenticated User Link
@@ -40,3 +40,11 @@ export const getLinkByShortUrl = async (shortUrl: string): Promise<GetLinkByShor
     method: "GET"
   });
 }
+
+export const updateLink = async (linkId: string, data: Partial<UpdateLinkPayload>): Promise<UpdateLinkResponse> => {
+  return apiRequest(`/links/${linkId}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+

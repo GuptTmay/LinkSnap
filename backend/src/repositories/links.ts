@@ -74,11 +74,79 @@ export class LinksRepository {
     return link !== null;
   }
 
-  // patch update link: longUrl, shortUrl
-  async updateLink(userId: string, linkId: string, data: { shortUrl?: string; longUrl?: string }): Promise<{ shortUrl: string; longUrl: string } | null> {
-    return await prisma.link.update({
-      where: { id: linkId, userId: userId },
-      data: data,
+  // patch update link
+  async updateLink(
+    userId: string,
+    linkId: string,
+    data: {
+      shortUrl?: string;
+      longUrl?: string;
+      title?: string;
+      tags?: string[];
+    }
+  ) {
+    return await prisma.$transaction(async (tx) => {
+      const { tags, ...linkData } = data;
+
+      // Update link fields
+      const link = await tx.link.update({
+        where: {
+          id: linkId,
+          userId,
+        },
+        data: linkData,
+        select: {
+          id: true,
+          shortUrl: true,
+          longUrl: true,
+          title: true,
+        },
+      });
+
+      // Update tags only if tags were provided
+      if (tags !== undefined) {
+        const uniqueTags = [...new Set(tags)];
+
+        // Create tags that don't already exist
+        await tx.tag.createMany({
+          data: uniqueTags.map((name) => ({
+            userId,
+            name,
+          })),
+          skipDuplicates: true,
+        });
+
+        // Find their IDs
+        const tagRows = await tx.tag.findMany({
+          where: {
+            userId,
+            name: {
+              in: uniqueTags,
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        // Remove existing tag relationships
+        await tx.linkTag.deleteMany({
+          where: {
+            linkId,
+          },
+        });
+
+        // Create new relationships
+        await tx.linkTag.createMany({
+          data: tagRows.map((tag) => ({
+            linkId,
+            tagId: tag.id,
+          })),
+          skipDuplicates: true,
+        });
+      }
+
+      return link;
     });
   }
 
@@ -250,7 +318,6 @@ export class LinksRepository {
       tags: link.tags.map(({ tag }) => tag),
     };
   }
-
 }
 
 export const linksRepository = new LinksRepository();

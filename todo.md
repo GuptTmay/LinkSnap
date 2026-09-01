@@ -45,7 +45,7 @@
 - REFACTOR Links and Qrcodes details page. 
     - get link details. 
     - get QrCode Details. 
-    
+    **Done**    
 
 - ADD edit Links and qrcode pages.  
     - patch links.

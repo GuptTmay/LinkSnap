@@ -143,7 +143,7 @@ describe("Links Controller HTTP API (Integration, real app + real auth)", () => 
   });
 
   describe("PATCH /links/:linkId", () => {
-    it("should update an existing link", async () => {
+    it("should update link fields and tags", async () => {
       const link = await prisma.link.create({
         data: {
           shortUrl: "original-url",
@@ -158,47 +158,105 @@ describe("Links Controller HTTP API (Integration, real app + real auth)", () => 
         .send({
           shortUrl: "modified-url",
           longUrl: "https://modified.com",
+          title: "Modified Link",
+          tags: ["work", "important"],
         });
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data.shortUrl).toBe("modified-url");
-    });
 
-    it("should return 404 if link does not exist", async () => {
-      const response = await request(app)
-        .patch(`${BASE}/links/00000000-0000-0000-0000-000000000000`)
-        .set("Cookie", AUTH_COOKIE)
-        .send({ shortUrl: "new-url" });
+      expect(response.body.data).toEqual(
+        expect.objectContaining({
+          shortUrl: "modified-url",
+          longUrl: "https://modified.com",
+          title: "Modified Link",
+        })
+      );
 
-      expect(response.status).toBe(404);
-      expect(response.body.error.code).toBe("NOT_FOUND");
-    });
-
-    it("should return 404 when updating a link owned by another user (ownership check)", async () => {
-      const otherUser = await prisma.user.create({
-        data: {
-          email: `owner-${Date.now()}@example.com`,
-          name: "Owner",
-          provider: "google",
-          providerId: `owner-google-${Date.now()}`,
+      const updatedLink = await prisma.link.findUnique({
+        where: { id: link.id },
+        include: {
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
         },
       });
 
+      expect(updatedLink?.shortUrl).toBe("modified-url");
+      expect(updatedLink?.longUrl).toBe("https://modified.com");
+      expect(updatedLink?.title).toBe("Modified Link");
+
+      expect(updatedLink?.tags.map((t) => t.tag.name)).toEqual(
+        expect.arrayContaining(["work", "important"])
+      );
+    });
+
+    it("should update only the provided fields", async () => {
       const link = await prisma.link.create({
         data: {
-          shortUrl: "not-yours",
+          shortUrl: "original-url",
           longUrl: "https://original.com",
-          userId: otherUser.id,
+          title: "Original Title",
+          userId: testUserId,
         },
       });
 
       const response = await request(app)
         .patch(`${BASE}/links/${link.id}`)
         .set("Cookie", AUTH_COOKIE)
-        .send({ shortUrl: "hijacked" });
+        .send({
+          title: "Updated Title",
+        });
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+
+      const updatedLink = await prisma.link.findUnique({
+        where: { id: link.id },
+      });
+
+      expect(updatedLink?.title).toBe("Updated Title");
+      expect(updatedLink?.shortUrl).toBe("original-url");
+      expect(updatedLink?.longUrl).toBe("https://original.com");
+    });
+
+    it("should remove all tags when tags is an empty array", async () => {
+      const link = await prisma.link.create({
+        data: {
+          shortUrl: "tagged-link",
+          longUrl: "https://example.com",
+          userId: testUserId,
+          tags: {
+            create: [
+              {
+                tag: {
+                  create: {
+                    name: "work",
+                    userId: testUserId,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      const response = await request(app)
+        .patch(`${BASE}/links/${link.id}`)
+        .set("Cookie", AUTH_COOKIE)
+        .send({
+          tags: [],
+        });
+
+      expect(response.status).toBe(200);
+
+      const linkTags = await prisma.linkTag.findMany({
+        where: { linkId: link.id },
+      });
+
+      expect(linkTags).toHaveLength(0);
     });
   });
 

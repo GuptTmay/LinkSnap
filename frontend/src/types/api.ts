@@ -72,6 +72,15 @@ export type GetLinksData = {
 
 export type GetLinksResponse = ApiSuccess<GetLinksData>;
 
-export type DeleteLinkResponse = ApiSuccess<{id: string}>;
+export type DeleteLinkResponse = ApiSuccess<{ id: string }>;
 
 export type GetLinkByShortUrlResponse = ApiSuccess<LinkWithRelations>
+
+export type UpdateLinkPayload = {
+  shortUrl?: string;
+  longUrl?: string;
+  title?: string;
+  tags?: string[];
+}
+
+export type UpdateLinkResponse = ApiSuccess<Link>
