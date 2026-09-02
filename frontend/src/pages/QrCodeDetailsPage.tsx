@@ -192,7 +192,7 @@ export const QrCodeDetailsPage: React.FC = () => {
       <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-[minmax(320px,400px)_minmax(0,1fr)]">
         {/* QR Preview */}
         <Card className="overflow-hidden border-border/60 shadow-sm">
-          <div className="bg-gradient-to-br from-primary/5 via-background to-primary/10">
+          <div className="bg-linear-to-br from-primary/5 via-background to-primary/10">
             <CardHeader className="text-center">
               <CardTitle className="text-lg">Your QR Code</CardTitle>
               <CardDescription>
@@ -201,7 +201,7 @@ export const QrCodeDetailsPage: React.FC = () => {
             </CardHeader>
 
             <CardContent className="flex flex-col items-center gap-6 pb-7">
-              <div className="relative w-full max-w-[300px]">
+              <div className="relative w-full max-w-75">
                 <div className="absolute -inset-2 rounded-2xl bg-primary/5 blur-xl" />
 
                 <div className="relative aspect-square w-full rounded-2xl border bg-white p-4 shadow-md">
@@ -228,7 +228,7 @@ export const QrCodeDetailsPage: React.FC = () => {
                 type="button"
                 onClick={handleDownload}
                 disabled={!qrDataUrl}
-                className="w-full max-w-[300px] gap-2"
+                className="w-full max-w-75 gap-2"
                 size="lg"
               >
                 <Download className="h-4 w-4" />
