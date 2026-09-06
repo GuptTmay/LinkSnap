@@ -17,16 +17,17 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { NotFound } from './pages/NotFound';
 
 function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <AuthProvider>
         <Toaster position="bottom-right" />
-        <BrowserRouter>
+        <BrowserRouter basename="/a">
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/intro" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
 
             {/* Protected App Routes with AppLayout */}
@@ -140,6 +141,10 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route path="*" element={
+                <NotFound />
+            } />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
