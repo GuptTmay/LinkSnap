@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import { ZodType } from "zod";
 
 import { linksRepository } from "../repositories/links";
-import { LINK_ID_LENGTH, MAX_RETRIES } from "../config";
+import { LINK, MAX_RETRIES } from "../config";
 import { CheckIfShortUrlExistSchema, CreateLinkSchema, DeleteLinkParamsSchema, FindByUserIdAndShortUrlSchema, GetLinksQuerySchema, RedirectLinkSchema, UpdateLinkBodySchema, UpdateLinkParamsSchema } from "../schema/link";
 import { BodyValidatedRequest, ParamsValidatedRequest, QueryValidatedRequest, ValidatedRequest } from "../types/validated-request";
 import { failure, success } from "../utils/status";
@@ -44,7 +44,7 @@ export class LinksController {
       }
 
       for (let i = 0; i < MAX_RETRIES; i++) {
-        const shortUrl = nanoid(LINK_ID_LENGTH);
+        const shortUrl = nanoid(LINK.RANDOM_ID_LENGTH);
 
         try {
           const link = await linksRepository.create(
