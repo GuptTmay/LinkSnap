@@ -1,0 +1,29 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/a/intro",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/a/(.*)",
+      "destination": {
+        "service": "frontend"
+      }
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "backend"
+      }
+    }
+  ]
+}
