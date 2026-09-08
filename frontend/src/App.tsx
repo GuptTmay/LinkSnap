@@ -24,10 +24,10 @@ function App() {
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <AuthProvider>
         <Toaster position="bottom-right" />
-        <BrowserRouter basename="/a">
+        <BrowserRouter>
           <Routes>
             {/* Public Routes */}
-            <Route path="/intro" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
 
             {/* Protected App Routes with AppLayout */}

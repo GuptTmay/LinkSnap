@@ -50,6 +50,12 @@
   - Make it look beautiful.
     **Done**
 
+- FEAT: Deploy Project
+  - Redirect url from base website url to main landing page.   
+  - Handle user entering wrong addresses. 
+  - in Both backend and frontend. 
+  - Solve edge cases. 
+
 - FEAT: Show Analytics in Details page.
 
 - Measure Redirect Api latency at scale
