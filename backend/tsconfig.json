@@ -2,15 +2,20 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
+    "noEmit": false,
     "types": ["node"],
 
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ES2023",
+
     "strict": true,
     "esModuleInterop": true,
+
+    "isolatedModules": false,
     "ignoreDeprecations": "6.0",
-    "isolatedModules": false 
+    "forceConsistentCasingInFileNames": true,
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
