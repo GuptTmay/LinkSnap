@@ -9,7 +9,7 @@ import tagsRouter from "./routers/tags";
 import { API_PREFIX } from "./config";
 import { errorHandler } from "./middlewares/errorHandler";
 
-export const app = express();
+const app = express();
 
 app.use(
   cors({
@@ -37,6 +37,7 @@ app.use(`${API_PREFIX}/tags`, tagsRouter);
 
 app.use(errorHandler); // Error handling middleware should be the last middleware in the stack
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server is running on port " + (process.env.PORT || 3000));
-}); 
+// app.listen(process.env.PORT || 3000, () => {
+//   console.log("Server is running on port " + (process.env.PORT || 3000));
+// }); 
+export default app;
