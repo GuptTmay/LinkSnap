@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, beforeEach, afterAll } from "vitest";
 import request from "supertest";
 import jwt from "jsonwebtoken";
 import { prisma } from "../lib/prisma";
-import app from "..";
+import { app } from "..";
 
 const BASE = "/api/v1";
 
