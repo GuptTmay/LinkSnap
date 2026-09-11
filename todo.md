@@ -56,7 +56,13 @@
   - in Both backend and frontend. 
   - Solve edge cases. 
 
+- Feat: Add Origin checking middleware. 
+
+- Feat: Add CSRF protection 
+
 - FEAT: Show Analytics in Details page.
+
+- Refactor: switch from cookie to normal jwt.
 
 - Measure Redirect Api latency at scale
   - Work towards optimizing it while measuring its impact.
