@@ -8,6 +8,7 @@ import redirectRouter from "./routers/redirect";
 import tagsRouter from "./routers/tags";
 import { API_PREFIX } from "./config";
 import { errorHandler } from "./middlewares/errorHandler";
+import { originValidator } from "./middlewares/originValidator";
 
 export const app = express();
 
@@ -21,7 +22,7 @@ app.use(
 app.use(cookieParser()); // Parses incoming request header cookies into req.cookies
 app.use(express.json()); // Parse incoming JSON requests 
 app.use(express.urlencoded({ extended: true })); // Accept URL-encoded data from traditional HTML forms
-
+app.use(originValidator); // Validate the origin of incoming requests to prevent CSRF attacks
 
 app.get('/health', (req, res) => {
   // Todo: check db
