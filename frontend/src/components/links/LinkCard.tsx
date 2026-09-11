@@ -115,6 +115,7 @@ export const LinkCard: React.FC<LinkCardProps> = ({
     transition-all duration-200
     hover:border-blue-500/40
     hover:shadow-md
+    px-5
   "
       >
         <CardContent className="p-4 sm:p-5">

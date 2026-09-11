@@ -57,8 +57,7 @@
   - Solve edge cases. 
 
 - Feat: Add Origin checking middleware. 
-
-- Feat: Add CSRF protection 
+    Done
 
 - FEAT: Show Analytics in Details page.
 
