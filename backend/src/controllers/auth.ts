@@ -53,7 +53,7 @@ export default class AuthController {
       res.cookie('token', token, {
         httpOnly: true, // Blocks client scripts execution layer access (Stops XSS)
         secure: process.env.NODE_ENV === "production", // Mandates HTTPS delivery pipelines only
-        sameSite: 'none', // Defense layer guarding from cross-site request forgeries (CSRF)
+        sameSite: 'lax', // Defense layer guarding from cross-site request forgeries (CSRF)
         path: '/',
         maxAge: JWT.TOKEN_EXP * 1000 // token age 
       });
@@ -98,7 +98,7 @@ export default class AuthController {
     res.clearCookie('token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: 'none'
+      sameSite: 'lax'
     });
 
     return res.status(200).json(success("Cookie successfully cleared.", {}));
