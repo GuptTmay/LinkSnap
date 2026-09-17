@@ -51,9 +51,9 @@ export const AppSidebar: React.FC = () => {
             className="flex items-center text-xl font-extrabold tracking-tight overflow-hidden whitespace-nowrap"
           >
             <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
-              {isCollapsed ? "L" : "Link"}
+              {isCollapsed ? "M" : "Mini"}
             </span>
-            {!isCollapsed && <span className="text-foreground">Snap</span>}
+            {!isCollapsed && <span className="text-foreground">Lnk</span>}
           </Link>
 
           {/* Create Button */}

@@ -10,9 +10,9 @@ export const Footer: React.FC = () => {
           className="text-lg font-bold tracking-tight"
         >
           <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
-            Link
+            Mini 
           </span>
-          <span className="text-foreground">Snap</span>
+          <span className="text-foreground">Lnk</span>
         </Link>
 
         <p className="text-xs text-muted-foreground text-center sm:text-right">

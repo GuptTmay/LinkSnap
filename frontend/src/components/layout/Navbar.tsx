@@ -23,9 +23,9 @@ export const Navbar: React.FC = () => {
           className="group flex items-center text-xl font-extrabold tracking-tight transition-opacity hover:opacity-90"
         >
           <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
-            Link
+            Mini 
           </span>
-          <span className="text-foreground">Snap</span>
+          <span className="text-foreground">Lnk</span>
         </Link>
 
         {/* Right Section */}
