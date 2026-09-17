@@ -25,7 +25,7 @@ export const AuthPage: React.FC = () => {
       <main className="flex-1 mx-auto container max-w-6xl px-4 flex items-center justify-center py-12">
         <Card className="w-full max-w-md shadow-md border-muted/60">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Welcome to LinkSnap</CardTitle>
+            <CardTitle className="text-2xl font-bold">Welcome to MiniLnk</CardTitle>
             <CardDescription>
               Sign in to manage your short links and custom QR codes
             </CardDescription>

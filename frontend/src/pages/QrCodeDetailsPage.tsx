@@ -95,7 +95,7 @@ export const QrCodeDetailsPage: React.FC = () => {
 
     const a = document.createElement("a");
     a.href = qrDataUrl;
-    a.download = `linksnap-qrcode-${details?.shortUrl || "download"}.png`;
+    a.download = `minilnk-qrcode-${details?.shortUrl || "download"}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

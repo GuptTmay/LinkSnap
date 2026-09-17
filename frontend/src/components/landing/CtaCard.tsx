@@ -29,7 +29,7 @@ export const CtaCard: React.FC = () => {
             Ready to simplify your links?
           </h2>
           <p className="text-sm text-muted-foreground max-w-md">
-            Join LinkSnap to create custom short links and trackable QR codes in seconds.
+            Join MiniLnk to create custom short links and trackable QR codes in seconds.
           </p>
         </div>
 

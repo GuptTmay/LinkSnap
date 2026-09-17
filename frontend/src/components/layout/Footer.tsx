@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
         </Link>
 
         <p className="text-xs text-muted-foreground text-center sm:text-right">
-          © {new Date().getFullYear()} LinkSnap. All rights reserved.
+          © {new Date().getFullYear()} MiniLnk. All rights reserved.
         </p>
       </div>
     </footer>

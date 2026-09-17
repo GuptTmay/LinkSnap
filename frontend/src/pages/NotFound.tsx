@@ -68,7 +68,7 @@ export const NotFound: React.FC = () => {
           <div className="mt-10 flex w-full max-w-md items-center gap-3">
             <div className="h-px flex-1 bg-border" />
             <span className="text-xs text-muted-foreground">
-              LinkSnap
+              MiniLnk
             </span>
             <div className="h-px flex-1 bg-border" />
           </div>

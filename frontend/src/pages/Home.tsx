@@ -438,7 +438,7 @@ export const Home: React.FC = () => {
                   </p>
 
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Your QR code will use your LinkSnap short URL.
+                    Your QR code will use your MiniLnk short URL.
                   </p>
                 </div>
               </form>

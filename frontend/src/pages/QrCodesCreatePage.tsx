@@ -267,7 +267,7 @@ export const QrCodesCreatePage: React.FC = () => {
 
       {/* Hint */}
       <p className="mt-4 text-center text-xs text-muted-foreground">
-        Your QR code will be linked to a trackable LinkSnap URL.
+        Your QR code will be linked to a trackable MiniLnk URL.
       </p>
     </div>
   );

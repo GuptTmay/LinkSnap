@@ -48,7 +48,7 @@ export const QrCodeDialog: React.FC<QrCodeDialogProps> = ({
 
     const link = document.createElement("a");
     link.href = qrDataUrl;
-    link.download = `linksnap-${shortUrl}.png`;
+    link.download = `minilnk-${shortUrl}.png`;
 
     document.body.appendChild(link);
     link.click();
