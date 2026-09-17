@@ -60,9 +60,9 @@
     Done
 
 - FEAT: Show Analytics in Details page.
-
+  
 - Refactor: switch from cookie to normal jwt.
-
+  **Done**
 - Measure Redirect Api latency at scale
   - Work towards optimizing it while measuring its impact.
 
