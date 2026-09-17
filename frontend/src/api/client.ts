@@ -11,9 +11,10 @@ export const apiRequest = async (
 ) => {
   const response = await fetch(`${fullBaseUrl}${endpoint}`, {
     ...options,
-    credentials: "include",
+    // credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("token")}`,
       ...options.headers,
     },
   });
