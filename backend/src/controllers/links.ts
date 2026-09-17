@@ -110,7 +110,11 @@ export class LinksController {
       const device = parser.getDevice().type ?? "desktop";
       const os = parser.getOS().name ?? null;
       let country = null;
-
+     
+      console.log("req.ip:", req.ip);
+      console.log("req.ips:", req.ips);
+      console.log("x-forwarded-for:", req.headers["x-forwarded-for"]);
+      
       if (req.ip) country = await getCountryFromIp(req.ip);
 
       await analyticsRepo.create({
