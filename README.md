@@ -1,6 +1,6 @@
-## LinkSnap
+## MiniLnk 
 
-**LinkSnap** is a URL shortener service that lets users turn long URLs into short, easy-to-share links.
+**MiniLnk** is a URL shortener service that lets users turn long URLs into short, easy-to-share links.
 
 ### Features
 

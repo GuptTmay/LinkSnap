@@ -19,10 +19,11 @@ app.use(
   })
 );
 
-app.use(cookieParser()); // Parses incoming request header cookies into req.cookies
+// app.use(cookieParser()); // Parses incoming request header cookies into req.cookies
 app.use(express.json()); // Parse incoming JSON requests 
 app.use(express.urlencoded({ extended: true })); // Accept URL-encoded data from traditional HTML forms
 app.use(originValidator); // Validate the origin of incoming requests to prevent CSRF attacks
+app.set("trust proxy", 1);
 
 app.get('/health', (req, res) => {
   // Todo: check db

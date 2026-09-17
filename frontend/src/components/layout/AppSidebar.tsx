@@ -81,7 +81,7 @@ export const AppSidebar: React.FC = () => {
                         isActive={isActive}
                         onClick={() => navigate(item.path)}
                         tooltip={item.label}
-                        className={isActive ? "bg-accent text-accent-foreground font-semibold" : ""}
+                        className={isActive ? "bg-accent text-accent-foreground font-semibold my-0.5" : "my-0.5"}
                       >
                         <Icon className="h-4 w-4 shrink-0" />
                         <span>{item.label}</span>
