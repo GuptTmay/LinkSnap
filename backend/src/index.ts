@@ -23,7 +23,7 @@ app.use(
 app.use(express.json()); // Parse incoming JSON requests 
 app.use(express.urlencoded({ extended: true })); // Accept URL-encoded data from traditional HTML forms
 app.use(originValidator); // Validate the origin of incoming requests to prevent CSRF attacks
-app.set("trust proxy", 1);
+app.set("trust proxy", true);
 
 app.get('/health', (req, res) => {
   // Todo: check db
