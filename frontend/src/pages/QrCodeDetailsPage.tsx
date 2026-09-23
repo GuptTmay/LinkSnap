@@ -143,14 +143,19 @@ export const QrCodeDetailsPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-            QR Code Details
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Loading QR code details...
-          </p>
+        <div className="space-y-2">
+          <div className="h-8 w-48 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-72 animate-pulse rounded bg-muted" />
         </div>
+
+        <Card>
+          <CardContent className="space-y-6 p-6">
+            <div className="h-6 w-48 animate-pulse rounded bg-muted" />
+            <div className="h-12 animate-pulse rounded bg-muted" />
+            <div className="h-20 animate-pulse rounded bg-muted" />
+            <div className="h-12 animate-pulse rounded bg-muted" />
+          </CardContent>
+        </Card>
       </div>
     );
   }
