@@ -6,6 +6,7 @@ import linksRouter from "./routers/links";
 import authRouter from "./routers/auth";
 import redirectRouter from "./routers/redirect";
 import tagsRouter from "./routers/tags";
+import analyticsRouter from "./routers/analytics";
 import { API_PREFIX } from "./config";
 import { errorHandler } from "./middlewares/errorHandler";
 import { originValidator } from "./middlewares/originValidator";
@@ -35,7 +36,7 @@ app.use("/", redirectRouter);
 app.use(`${API_PREFIX}/auth`, authRouter);
 app.use(`${API_PREFIX}/links`, linksRouter);
 app.use(`${API_PREFIX}/tags`, tagsRouter);
-
+app.use(`${API_PREFIX}/analytics`, analyticsRouter);
 
 app.use(errorHandler); // Error handling middleware should be the last middleware in the stack
 

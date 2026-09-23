@@ -1,4 +1,5 @@
 export type ErrorCode =
+  | "INVALID_DATE_RANGE"     // 400 — highlight the date range input specifically
   | "SHORT_URL_ALREADY_EXISTS"
   | "QR_CODE_ALREADY_EXISTS" // 409 — Show a toast notification.  
   | "LINK_NOT_FOUND"         // 404 — Show a toast notification.  
