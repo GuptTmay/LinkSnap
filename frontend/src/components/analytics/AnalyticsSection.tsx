@@ -117,13 +117,17 @@ export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
         </div>
 
         <div className="flex items-center gap-3 self-start sm:self-auto">
-          <Label htmlFor="analytics-toggle" className="text-sm font-medium cursor-pointer">
+          <Label
+            htmlFor="analytics-toggle"
+            className={`text-sm font-medium ${isLoading ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
+          >
             {showAnalytics ? "Hide Analytics" : "Show Analytics"}
           </Label>
           <Switch
             id="analytics-toggle"
             checked={showAnalytics}
             onCheckedChange={handleToggle}
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -188,7 +192,7 @@ export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
                 size="sm"
                 onClick={fetchAnalyticsData}
                 disabled={isLoading}
-                className="h-9 gap-1.5"
+                className="h-9 gap-1.5 cursor-pointer"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
                 <span>Refresh</span>

@@ -3,7 +3,7 @@
   1. QrCodeDetailsPage.tsx looks good. copy its style to LinksDetailsPage.tsx **Done**
   2. LinkEditPage.tsx and QrCodeEditPage.tsx need a ui rewamp. **Done**  
   3. When clicking on LinkCard or QrCodeCard in ListPages no loading page renders. **Done**
-  4. Ask claude for optimizing Analytics Component. [here](https://claude.ai/chat/6b0acb1e-62b6-44bb-8f74-6b3b9cc8af02) 
+  4. Ask claude for optimizing Analytics Component. [here](https://claude.ai/chat/6b0acb1e-62b6-44bb-8f74-6b3b9cc8af02) **Done**
 
 2. Add Rate Limiting by IP. 
 3. Measure Redirect endpoint latency before optimization.  
