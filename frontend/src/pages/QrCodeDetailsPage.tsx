@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { deleteLinks, getLinkByShortUrl } from "@/api/links.api";
 import { ApiError } from "@/types/error";
 import type { LinkWithRelations } from "@/types/api";
+import { AnalyticsSection } from "@/components/analytics/AnalyticsSection";
 
 export const QrCodeDetailsPage: React.FC = () => {
   const { shortUrl } = useParams<{ shortUrl: string }>();
@@ -387,6 +388,14 @@ export const QrCodeDetailsPage: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Analytics Section */}
+      {details.id && (
+        <AnalyticsSection
+          linkId={details.id}
+          mode="qrcode"
+        />
+      )}
     </div>
   );
 };

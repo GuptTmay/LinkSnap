@@ -21,6 +21,7 @@ import { deleteLinks, getLinkByShortUrl } from "@/api/links.api";
 import { ApiError } from "@/types/error";
 import type { LinkWithRelations } from "@/types/api";
 import { toast } from "sonner";
+import { AnalyticsSection } from "@/components/analytics/AnalyticsSection";
 
 export const LinkDetailsPage: React.FC = () => {
   const { shortUrl } = useParams<{ shortUrl: string }>();
@@ -335,6 +336,14 @@ export const LinkDetailsPage: React.FC = () => {
 
         </CardContent>
       </Card>
+
+      {/* Analytics Section */}
+      {details.id && (
+        <AnalyticsSection
+          linkId={details.id}
+          mode="link"
+        />
+      )}
     </div>
   );
 };
