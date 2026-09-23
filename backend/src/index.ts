@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 
 import linksRouter from "./routers/links";
 import authRouter from "./routers/auth";
-import redirectRouter from "./routers/redirect";
+import openRouter from "./routers/open";
 import tagsRouter from "./routers/tags";
 import analyticsRouter from "./routers/analytics";
 import { API_PREFIX } from "./config";
@@ -26,13 +26,7 @@ app.use(express.urlencoded({ extended: true })); // Accept URL-encoded data from
 app.use(originValidator); // Validate the origin of incoming requests to prevent CSRF attacks
 app.set("trust proxy", true);
 
-app.get('/health', (req, res) => {
-  // Todo: check db
-  res.json({ message: 'API is working!' });
-});
-
-
-app.use("/", redirectRouter);
+app.use("/", openRouter); // Open routes that don't require authentication or prefix
 app.use(`${API_PREFIX}/auth`, authRouter);
 app.use(`${API_PREFIX}/links`, linksRouter);
 app.use(`${API_PREFIX}/tags`, tagsRouter);
