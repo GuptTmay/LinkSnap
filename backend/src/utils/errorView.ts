@@ -21,3 +21,21 @@ export function sendNotFoundPage(res: Response) {
     </html>
   `);
 }
+
+export function sendRateLimitPage(res: Response) {
+  return res.status(429).type("html").send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Too Many Requests</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body>
+        <h1>Too Many Requests</h1>
+        <p>You have made too many requests in a short period of time.</p>
+        <p>Please wait a little while before trying again.</p>
+      </body>
+    </html>
+  `);
+}

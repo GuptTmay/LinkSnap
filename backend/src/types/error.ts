@@ -1,4 +1,5 @@
 export type ErrorCode =
+  | "TOO_MANY_REQUESTS"       // 429 — show countdown timer, disable submit button
   | "INVALID_DATE_RANGE"     // 400 — highlight the date range input specifically
   | "SHORT_URL_ALREADY_EXISTS"
   | "QR_CODE_ALREADY_EXISTS" // 409 — Show a toast notification.  
