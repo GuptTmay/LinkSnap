@@ -59,8 +59,9 @@ export class LinksRepository {
   }
 
   // get single Link  shorturl
+  // return null when not found
   async findByShortUrl(shortUrl: string) {
-    return await prisma.link.findUniqueOrThrow({
+    return await prisma.link.findUnique({
       where: { shortUrl },
     });
   }

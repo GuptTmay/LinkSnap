@@ -105,14 +105,12 @@ export class LinksController {
     const { shorturl } = req.validated.params;
     try {
       const link = await getLink(shorturl);
+      if (!link) return sendNotFoundPage(res); 
       
       await createRedirectAnalytics(req, link.id);
 
       return res.redirect(302, link.longUrl);
     } catch (err) {
-      if (isRecordNotFoundError(err)) {
-        return sendNotFoundPage(res);
-      }
       console.error(err);
       return res.status(500).json(failure("Internal server error", "INTERNAL_ERROR", err));
     }
