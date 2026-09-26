@@ -29,8 +29,8 @@ import type {
 } from "@/types/api";
 
 import { TagComboboxMultiple } from "@/components/TagComboboxMultiple";
+import { SHORT_URL_CONFIG } from "@/config";
 
-const SHORT_URL_PATTERN = /^[a-zA-Z0-9_-]{1,20}$/;
 const SHORT_URL_DEBOUNCE_MS = 600;
 
 export const LinkEditPage: React.FC = () => {
@@ -125,10 +125,8 @@ export const LinkEditPage: React.FC = () => {
       return;
     }
 
-    if (!SHORT_URL_PATTERN.test(trimmed)) {
-      setShortUrlError(
-        "Must be 1-20 alphanumeric characters, hyphens, or underscores"
-      );
+    if (!SHORT_URL_CONFIG.PATTERN.test(trimmed)) {
+      setShortUrlError(SHORT_URL_CONFIG.ERROR_MESSAGE);
       setShortUrlTaken(false);
       setIsCheckingShortUrl(false);
       return;

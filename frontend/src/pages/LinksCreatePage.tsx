@@ -26,6 +26,7 @@ import type {
   Tag,
 } from "@/types/api";
 import { TagComboboxMultiple } from "@/components/TagComboboxMultiple";
+import { SHORT_URL_CONFIG } from "@/config";
 import { toast } from "sonner";
 
 export const LinksCreatePage: React.FC = () => {
@@ -52,12 +53,8 @@ export const LinksCreatePage: React.FC = () => {
       return;
     }
 
-    const validPattern = /^[a-zA-Z0-9_-]{1,20}$/;
-
-    if (!validPattern.test(trimmed)) {
-      setShortUrlError(
-        "Use 1–20 letters, numbers, hyphens, or underscores."
-      );
+    if (!SHORT_URL_CONFIG.PATTERN.test(trimmed)) {
+      setShortUrlError(SHORT_URL_CONFIG.ERROR_MESSAGE);
       setShortUrlTaken(false);
       setIsCheckingShortUrl(false);
       return;

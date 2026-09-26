@@ -32,7 +32,7 @@ export type GetAllLinks = ApiSuccess<{
 }>
 
 export type CreateLinkPayload = {
-  shortUrl?: string; // 1-20 chars, regex: /^[a-zA-Z0-9_-]+$/
+  shortUrl?: string; // 3-50 chars, regex: /^[a-zA-Z0-9_-]{3,50}$/
   longUrl: string;   // valid URL
   title?: string;    // 1-64 chars
   tags?: string[];   // array of string (max 50 chars each)

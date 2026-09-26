@@ -6,7 +6,7 @@ export const API_PREFIX = "/api/v1";
 export const LINK = {
   RANDOM_ID_LENGTH: 7,
   MIN_SHORT_URL_LENGTH: 3,
-  MAX_SHORT_URL_LENGTH: 10,
+  MAX_SHORT_URL_LENGTH: 50,
 };
 
 export const PORT = 3000;
