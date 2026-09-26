@@ -12,6 +12,8 @@ import { isRecordNotFoundError, isUniqueConstraintError } from "../utils/prisma"
 import { analyticsRepo } from '../repositories/analytics';
 import { getCountryFromIp } from '../services/geolocation.service';
 import { sendNotFoundPage } from '../utils/errorView';
+import { createRedirectAnalytics } from '../services/analytics.service';
+import { getLink } from '../services/redirect.service';
 
 
 export class LinksController {
@@ -102,37 +104,14 @@ export class LinksController {
   async redirectToLongUrl(req: ParamsValidatedRequest<typeof RedirectLinkSchema>, res: Response) {
     const { shorturl } = req.validated.params;
     try {
-      const link = await linksRepository.findByShortUrl(shorturl);
-
-      const userAgent = req.headers["user-agent"];
-      const parser = new UAParser(userAgent);
-      const browser = parser.getBrowser().name ?? null;
-      const device = parser.getDevice().type ?? "desktop";
-      const os = parser.getOS().name ?? null;
-      let country = null;
-     
-      // console.log("req.ip:", req.ip);
-      // console.log("req.ips:", req.ips);
-      // console.log("x-forwarded-for:", req.headers["x-forwarded-for"]);
+      const link = await getLink(shorturl);
       
-      if (req.ip) country = await getCountryFromIp(req.ip);
-
-      await analyticsRepo.create({
-        linkId: link.id,
-        ipAddress: req.ip,
-        userAgent,
-        referrer: req.headers.referer,
-        os,
-        country,
-        browser,
-        device,
-      });
+      await createRedirectAnalytics(req, link.id);
 
       return res.redirect(302, link.longUrl);
     } catch (err) {
       if (isRecordNotFoundError(err)) {
         return sendNotFoundPage(res);
-        // return res.status(404).json(failure("Page not found, You’ve got the wrong address. \n You may have mis-typed the address", "NOT_FOUND"));
       }
       console.error(err);
       return res.status(500).json(failure("Internal server error", "INTERNAL_ERROR", err));
