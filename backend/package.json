@@ -14,7 +14,11 @@
     "db:generate": "prisma generate",
     "db:migrate:test": "dotenv -e .env.test -- npx prisma migrate deploy",
     "test": "npm run db:migrate:test && dotenv -e .env.test -- vitest",
-    "test typecheck": "vitest typecheck"
+    "test typecheck": "vitest typecheck",
+  
+    "benchmark:redirect": "k6 run benchmark/redirect.js",
+    "benchmark:hot": "k6 run -e SCENARIO=hotLink benchmark/redirect.js",
+    "benchmark:multiple": "k6 run -e SCENARIO=multipleLinks benchmark/redirect.js"
   },
   "keywords": [],
   "author": "",

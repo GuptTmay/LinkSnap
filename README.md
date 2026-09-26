@@ -31,3 +31,18 @@
 * File/image/video link generation
 
 
+
+## Setup
+
+### Benchmark
+
+**Prerequisite:** Install [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/) before running the benchmarks.
+
+1. Add your existing short URL IDs to the `urlIds` array in `benchmark/redirect.js`.
+2. Run one of the following:
+
+```bash
+npm run benchmark:redirect    # Run all workloads
+npm run benchmark:hot         # Test a single hot link
+npm run benchmark:multiple    # Test multiple random links
+```
