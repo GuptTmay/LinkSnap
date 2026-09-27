@@ -59,39 +59,39 @@ export const QrCodeDialog: React.FC<QrCodeDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-2xl p-0">
+      <DialogContent className="w-[calc(100%-2rem)] max-w-md max-h-[90vh] flex flex-col overflow-hidden rounded-2xl p-0">
         {/* Header */}
-        <DialogHeader className="border-b bg-muted/20 px-5 py-5 text-center sm:px-7">
-          <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-            <QrCode className="h-6 w-6" />
+        <DialogHeader className="shrink-0 border-b bg-muted/20 px-5 py-4 text-center sm:px-6">
+          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <QrCode className="h-5 w-5" />
           </div>
 
-          <DialogTitle className="text-xl font-bold sm:text-2xl">
+          <DialogTitle className="text-lg font-bold sm:text-xl">
             Your QR Code is Ready
           </DialogTitle>
 
-          <DialogDescription className="mx-auto max-w-sm text-sm">
+          <DialogDescription className="mx-auto max-w-sm text-xs sm:text-sm">
             Scan this QR code to open your shortened link.
           </DialogDescription>
 
           {registrationFailed && (
-            <p className="mt-2 text-xs font-medium text-destructive">
+            <p className="mt-1 text-xs font-medium text-destructive">
               QR generated locally, but registration with the backend failed.
             </p>
           )}
         </DialogHeader>
 
-        {/* QR Section */}
-        <div className="flex flex-col items-center px-5 py-6 sm:px-7 sm:py-8">
+        {/* QR Section (Scrollable if viewport is small) */}
+        <div className="flex-1 overflow-y-auto flex flex-col items-center px-5 py-4 sm:px-6 sm:py-6">
           <div className="rounded-2xl border bg-white p-3 shadow-md sm:p-4">
             {qrDataUrl ? (
               <img
                 src={qrDataUrl}
                 alt="Generated QR Code"
-                className="h-60 w-60 object-contain sm:h-72 sm:w-72"
+                className="h-48 w-48 object-contain sm:h-56 sm:w-56"
               />
             ) : (
-              <div className="flex h-60 w-60 items-center justify-center rounded-xl bg-muted text-sm text-muted-foreground animate-pulse sm:h-72 sm:w-72">
+              <div className="flex h-48 w-48 items-center justify-center rounded-xl bg-muted text-sm text-muted-foreground animate-pulse sm:h-56 sm:w-56">
                 Generating QR code...
               </div>
             )}
@@ -129,7 +129,7 @@ export const QrCodeDialog: React.FC<QrCodeDialogProps> = ({
         </div>
 
         {/* Footer */}
-        <DialogFooter className="flex-col gap-2 border-t bg-muted/10 px-5 py-4 sm:flex-row sm:justify-between sm:px-7">
+        <DialogFooter className="shrink-0 flex-col gap-2 border-t bg-muted/10 px-5 pt-4 pb-8 sm:flex-row sm:justify-between sm:px-6">
           <Button
             type="button"
             variant="outline"
