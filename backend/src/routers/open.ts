@@ -16,6 +16,6 @@ router.get('/health', async (req, res) => {
   res.json({ message: 'API is working!', redis: value });
 });
 
-router.get("/:shorturl", validate({ params: RedirectLinkSchema }), (req, res) => links.redirectToLongUrl(req as ParamsValidatedRequest<typeof RedirectLinkSchema>, res));
+router.get("/:shorturl", rateLimitByIp, validate({ params: RedirectLinkSchema }), (req, res) => links.redirectToLongUrl(req as ParamsValidatedRequest<typeof RedirectLinkSchema>, res));
 
 export default router;
