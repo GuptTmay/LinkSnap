@@ -14,12 +14,12 @@ const external = [
 ];
 
 await esbuild.build({
-  entryPoints: ["src/index.ts"],   // where your app starts
+  entryPoints: ["src/index.ts", "src/workers/analytics.worker.ts"],   // where your app starts
   bundle: true,                     // trace all your own imports into one file
   platform: "node",                 // use Node's module semantics, not browser
   target: "node22",                 // match your actual Node runtime
   format: "esm",                    // matches "type": "module" in package.json
-  outfile: "dist/index.js",
+  outdir: "dist",
   external,
   sourcemap: true,                  // readable stack traces in prod logs
   minify: false,                    // keep off; flip on later once boring and stable

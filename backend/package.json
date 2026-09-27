@@ -22,7 +22,8 @@
     "benchmark:hot": "k6 run -e SCENARIO=hotLink benchmark/redirect.js",
     "benchmark:multiple": "k6 run -e SCENARIO=multipleLinks benchmark/redirect.js",
   
-    "worker:analytics": "tsx src/workers/analytics.worker.ts"
+    "worker:analytics:dev": "tsx src/workers/analytics.worker.ts",
+    "worker:analytics": "node dist/workers/analytics.worker.js"
   },
   "keywords": [],
   "author": "",
