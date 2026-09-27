@@ -1,48 +1,108 @@
-## MiniLnk 
+# MiniLnk
 
-**MiniLnk** is a URL shortener service that lets users turn long URLs into short, easy-to-share links.
+MiniLnk is a URL shortener service that turns long URLs into short, shareable links.
 
-### Features
+**Live Demo:** `https://minilnk-app.onrender.com`
 
-* **URL Shortening** – Create short links from long URLs.
-* **Custom URLs** – Choose a custom short link ID.
-* **Google OAuth** – Secure user authentication using Google Oauth
-* **Link Management** – Update and manage created links.
-* **Analytics** – Track clicks, countries, devices, and browsers.
-* **URL Redirection** – Automatically redirect users from the short URL to the original URL.
-* **QR Codes** – Generate QR codes for shortened links *(planned)*.
+## Features
 
-### Tech Stack
+* **URL Shortening** — Create short links from long URLs.
+* **Custom URLs** — Choose your own short URL ID.
+* **Google OAuth** — Authentication using Google OAuth.
+* **Link Management** — Update and manage created links.
+* **Analytics** — Track clicks, countries, devices, browsers, and operating systems.
+* **URL Redirection** — Redirect short URLs to their original destinations.
+* **Redis Caching** — Cache frequently accessed links for faster redirects.
+* **Background Analytics** — Process analytics asynchronously using BullMQ and Redis.
+* **QR Codes** — Generate QR codes for shortened links. 
+* **Rate Limiting** — Limit requests per IP to prevent abuse.
 
-**Frontend:** React, TypeScript, Tailwind CSS, shadcn/ui
-**Backend:** Node.js, Express.js
-**Database:** PostgreSQL, Prisma
-**Authentication:** JWT, Cookies
+## Tech Stack
 
-### Future Plans
+* **Runtime:** Node.js
+* **Backend:** Express.js, TypeScript
+* **Database:** PostgreSQL, Prisma ORM
+* **Cache / Queue:** Redis, BullMQ
+* **Authentication:** JWT
+* **Testing:** Vitest
+* **Performance Testing:** k6
 
-* Microsoft, Twitter, Github OAuth
-* QR code generation
-* Redis caching
-* IP-based rate limiting
-* Automated testing with Playwright
-* Performance testing and optimization
-* Advanced analytics dashboard
-* File/image/video link generation
-
-
+## Future Plans
+* Microsoft, GitHub, and other OAuth providers
+* File/image/video links
 
 ## Setup
 
-### Benchmark
+### Backend
 
-**Prerequisite:** Install [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/) before running the benchmarks.
+```bash
+npm install
+npm run dev
+```
 
-1. Add your existing short URL IDs to the `urlIds` array in `benchmark/redirect.js`.
-2. Run one of the following:
+### Analytics Worker
+
+The analytics worker runs separately from the API:
+
+```bash
+npm run worker:analytics
+```
+
+### Available Scripts
+
+```bash
+npm run dev                  # Development server
+npm run build                # Production build
+npm start                    # Production server
+
+npm run typecheck            # TypeScript type checking
+
+npm test                     # Run tests
+
+npm run worker:analytics    # Start analytics worker
+```
+
+## Performance Benchmark
+
+The project includes k6 benchmarks for measuring redirect performance.
+
+### Prerequisite
+
+Install [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/).
+
+Add your existing short URL IDs to:
+
+```text
+benchmark/redirect.js
+```
+
+Then run:
 
 ```bash
 npm run benchmark:redirect    # Run all workloads
-npm run benchmark:hot         # Test a single hot link
-npm run benchmark:multiple    # Test multiple random links
+npm run benchmark:hot         # Single hot link
+npm run benchmark:multiple    # Multiple random links
 ```
+
+### Benchmark Results
+
+The benchmark progressively optimized the redirect endpoint:
+
+```text
+V0 → PostgreSQL + synchronous analytics
+V1 → Redis caching
+V2 → Asynchronous analytics
+V3 → Redis + BullMQ analytics worker
+```
+
+The final benchmark reached approximately:
+
+```text
+7,148 requests/sec
+4.11 ms average latency
+7.02 ms p95 latency
+```
+
+See the full benchmark and methodology:
+
+**[Redirect Benchmark](backend/benchmark/README.md)**
