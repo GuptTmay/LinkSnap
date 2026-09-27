@@ -107,7 +107,9 @@ export class LinksController {
       const link = await getLink(shorturl);
       if (!link) return sendNotFoundPage(res); 
       
-      await createRedirectAnalytics(req, link.id);
+      createRedirectAnalytics(req, link.id).catch((err) => {
+        console.error("Analytics failed:", err);
+      });
 
       return res.redirect(302, link.longUrl);
     } catch (err) {
