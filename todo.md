@@ -8,23 +8,25 @@
 2. Add Rate Limiting by IP. **Done**
   - Add redis.
   - Set 10/request/mins/IP 
-3. Measure Redirect endpoint latency before optimization.  
-4. Optimize Redirection endpoint.  
-  - Use Redis. 
-  - handle Analytics task somehow.
-5. Measure Redirect endpoint latency after optimization.  
+
+3. Optimize Redirection endpoint.  
+  - Use Redis. **Done**
+  - handle Analytics task somehow. **Done**
+
+4. Benchmark every new architechural decision starting from baseline during optimization. **Done**
 6. Setup Docs(README.md file). 
 7. Reserved link codes such as health 
-7. Project Ends.  
+8. Project Ends.  
 
-## Future Todo
+## Issues
+ - Unmount the login button in login page.  
+ - Blacklist jwt in backend when use logout using redis.  
 
-1. Feat: Integration Test for Analytics Repo
-2. Refactor: Optimize RedirectByLongUrl func in Link Controller.
-3. Feat: Add last access time to tags. So we can give user the most recently used tags.
-4. Fix: In Analytics if geolocationbyip is not able to find user location set it as unknow
-   Or May this already works as it is set to null which can be take as unknow.
-   But check it before deciding
-5. Fix: logout not working,
-   when user logout blacklist their jwt.
-   delete token from cookie on the frontend.
+
+## Could do in future 
+- Add Mutex to redirect endpoint. 
+  - Document and benchmark its effectiveness before and after.
+  - Test it when a cached link expires and all the request fall back to postgresdb.
+  - Check implementation here 4nd prompt: [here](https://claude.ai/share/ab6d6b5b-fe42-40d4-bc76-35b393fb4e6a)
+
+
