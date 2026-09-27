@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { LogOut, LayoutDashboard } from "lucide-react";
 export const Navbar: React.FC = () => {
   const { isAuthenticated, logoutUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logoutUser();
@@ -54,13 +55,15 @@ export const Navbar: React.FC = () => {
               </Button>
             </div>
           ) : (
-            <Button
-              size="sm"
-              onClick={() => navigate("/auth")}
-              className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-            >
-              Login
-            </Button>
+            location.pathname !== "/auth" && (
+              <Button
+                size="sm"
+                onClick={() => navigate("/auth")}
+                className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
+                Login
+              </Button>
+            )
           )}
         </div>
       </div>
