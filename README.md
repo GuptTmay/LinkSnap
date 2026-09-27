@@ -1,92 +1,35 @@
 # MiniLnk
 
-MiniLnk is a URL shortener service that turns long URLs into short, shareable links.
+A URL shortener service — long URLs in, short shareable links out, with real analytics and a Redis/BullMQ pipeline behind the redirect endpoint.
 
-**Live Demo:** `https://minilnk-app.onrender.com`
+**Live Demo:** [https://minilnk-app.onrender.com](https://minilnk-app.onrender.com)
 
 ## Features
 
-* **URL Shortening** — Create short links from long URLs.
-* **Custom URLs** — Choose your own short URL ID.
-* **Google OAuth** — Authentication using Google OAuth.
-* **Link Management** — Update and manage created links.
-* **Analytics** — Track clicks, countries, devices, browsers, and operating systems.
-* **URL Redirection** — Redirect short URLs to their original destinations.
-* **Redis Caching** — Cache frequently accessed links for faster redirects.
-* **Background Analytics** — Process analytics asynchronously using BullMQ and Redis.
-* **QR Codes** — Generate QR codes for shortened links. 
-* **Rate Limiting** — Limit requests per IP to prevent abuse.
+- **URL Shortening** — Create short links from long URLs.
+- **Custom URLs** — Choose your own short URL ID.
+- **Google OAuth** — Authentication using Google OAuth.
+- **Link Management** — Update and manage created links.
+- **Analytics** — Track clicks, countries, devices, browsers, and operating systems.
+- **URL Redirection** — Redirect short URLs to their original destinations.
+- **Redis Caching** — Cache frequently accessed links for faster redirects.
+- **Background Analytics** — Process analytics asynchronously using BullMQ and Redis.
+- **QR Codes** — Generate QR codes for shortened links.
+- **Rate Limiting** — Limit requests per IP to prevent abuse.
 
 ## Tech Stack
 
-* **Runtime:** Node.js
-* **Backend:** Express.js, TypeScript
-* **Database:** PostgreSQL, Prisma ORM
-* **Cache / Queue:** Redis, BullMQ
-* **Authentication:** JWT
-* **Testing:** Vitest
-* **Performance Testing:** k6
-
-## Future Plans
-* Microsoft, GitHub, and other OAuth providers
-* File/image/video links
-
-## Setup
-
-### Backend
-
-```bash
-npm install
-npm run dev
-```
-
-### Analytics Worker
-
-The analytics worker runs separately from the API:
-
-```bash
-npm run worker:analytics
-```
-
-### Available Scripts
-
-```bash
-npm run dev                  # Development server
-npm run build                # Production build
-npm start                    # Production server
-
-npm run typecheck            # TypeScript type checking
-
-npm test                     # Run tests
-
-npm run worker:analytics    # Start analytics worker
-```
-
-## Performance Benchmark
-
-The project includes k6 benchmarks for measuring redirect performance.
-
-### Prerequisite
-
-Install [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/).
-
-Add your existing short URL IDs to:
-
-```text
-benchmark/redirect.js
-```
-
-Then run:
-
-```bash
-npm run benchmark:redirect    # Run all workloads
-npm run benchmark:hot         # Single hot link
-npm run benchmark:multiple    # Multiple random links
-```
+- **Runtime:** Node.js
+- **Backend:** Express.js, TypeScript
+- **Database:** PostgreSQL, Prisma ORM
+- **Cache / Queue:** Redis, BullMQ
+- **Authentication:** JWT
+- **Testing:** Vitest
+- **Performance Testing:** k6
 
 ### Benchmark Results
 
-The benchmark progressively optimized the redirect endpoint:
+The redirect endpoint was progressively optimized 20x over four iterations:
 
 ```text
 V0 → PostgreSQL + synchronous analytics
@@ -106,3 +49,31 @@ The final benchmark reached approximately:
 See the full benchmark and methodology:
 
 **[Redirect Benchmark](backend/benchmark/README.md)**
+
+## Architecture
+
+- **Writes** go straight to PostgreSQL via Prisma.
+- **Reads** (redirects) hit Redis first, cache-aside style, falling back to Postgres on miss.
+- **Analytics** (clicks, country, device, browser, OS) are pushed to a BullMQ queue and processed by a separate worker, keeping the redirect path itself synchronous-write-free.
+  This split is what took the redirect endpoint from a blocking DB+analytics write to a sub-5ms cache hit — see the benchmark doc for the per-stage breakdown.
+
+## Images
+Links Details Page
+![Link Details](docs/images/LinkDetails1.png)
+
+Link Analytics
+![Analytics Details](docs/images/LinkDetails2.png)
+
+Link Analytics
+![Analytics Details](docs/images/LinkDetails3.png)
+
+QrCode Details
+![QrCode Details](docs/images/QrCodeDetails.png)
+
+## Setup
+See **[SETUP.md](SETUP.md)** for install, dev server, worker, and benchmark instructions.
+
+## Future Plans
+
+- Microsoft, GitHub, and other OAuth providers
+- File/image/video links
