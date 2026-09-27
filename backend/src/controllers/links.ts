@@ -12,7 +12,7 @@ import { isRecordNotFoundError, isUniqueConstraintError } from "../utils/prisma"
 import { analyticsRepo } from '../repositories/analytics';
 import { getCountryFromIp } from '../services/geolocation.service';
 import { sendNotFoundPage } from '../utils/errorView';
-import { createRedirectAnalytics } from '../services/analytics.service';
+import { createRedirectAnalytics, queueRedirectAnalytics } from '../services/analytics.service';
 import { getLink } from '../services/redirect.service';
 
 
@@ -106,10 +106,8 @@ export class LinksController {
     try {
       const link = await getLink(shorturl);
       if (!link) return sendNotFoundPage(res); 
-      
-      createRedirectAnalytics(req, link.id).catch((err) => {
-        console.error("Analytics failed:", err);
-      });
+     
+      await queueRedirectAnalytics(req, link.id);
 
       return res.redirect(302, link.longUrl);
     } catch (err) {

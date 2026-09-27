@@ -3,12 +3,14 @@ import { UAParser } from "ua-parser-js";
 import { analyticsRepo } from "../repositories/analytics";
 import { getCountryFromIp } from "../services/geolocation.service";
 
-export async function createRedirectAnalytics(
-  req: Request,
-  linkId: string
-) {
-  const userAgent = req.headers["user-agent"];
+import { analyticsQueue } from "../queues/analytics.queue";
 
+export async function createRedirectAnalytics(
+  linkId: string,
+  ipAddress: string | undefined,
+  userAgent: string | undefined,
+  referrer: string | undefined
+) {
   const parser = new UAParser(userAgent);
 
   const browser = parser.getBrowser().name ?? null;
@@ -17,22 +19,38 @@ export async function createRedirectAnalytics(
 
   let country = null;
 
-  // console.log("req.ip:", req.ip);
-  // console.log("req.ips:", req.ips);
-  // console.log("x-forwarded-for:", req.headers["x-forwarded-for"]);
-  
-  if (req.ip) {
-    country = await getCountryFromIp(req.ip);
+  if (ipAddress) {
+    country = await getCountryFromIp(ipAddress);
   }
 
   return analyticsRepo.create({
     linkId,
-    ipAddress: req.ip,
+    ipAddress,
     userAgent,
-    referrer: req.headers.referer,
+    referrer,
     os,
     country,
     browser,
     device,
   });
+}
+
+export async function queueRedirectAnalytics(
+  req: Request,
+  linkId: string
+) {
+  await analyticsQueue.add("redirect-analytics", {
+    linkId,
+    ipAddress: req.ip,
+    userAgent: req.headers["user-agent"],
+    referrer: req.headers.referer,
+  },
+    {
+      attempts: 5,
+      backoff: {
+        type: "exponential",
+        delay: 1000,
+      },
+    }
+  );
 }

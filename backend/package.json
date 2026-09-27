@@ -10,15 +10,19 @@
     "build": "node build.mjs",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
+
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:migrate:test": "dotenv -e .env.test -- npx prisma migrate deploy",
+
     "test": "npm run db:migrate:test && dotenv -e .env.test -- vitest",
     "test typecheck": "vitest typecheck",
-  
+ 
     "benchmark:redirect": "k6 run benchmark/redirect.js",
     "benchmark:hot": "k6 run -e SCENARIO=hotLink benchmark/redirect.js",
-    "benchmark:multiple": "k6 run -e SCENARIO=multipleLinks benchmark/redirect.js"
+    "benchmark:multiple": "k6 run -e SCENARIO=multipleLinks benchmark/redirect.js",
+  
+    "worker:analytics": "tsx src/workers/analytics.worker.ts"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +32,7 @@
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
     "bcrypt": "^6.0.0",
+    "bullmq": "^6.3.9",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
