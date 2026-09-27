@@ -29,7 +29,7 @@ A URL shortener service — long URLs in, short shareable links out, with real a
 
 ### Benchmark Results
 
-The redirect endpoint was progressively optimized 20x over four iterations:
+The redirect endpoint was progressively **optimized 20x** over four iterations:
 
 ```text
 V0 → PostgreSQL + synchronous analytics
