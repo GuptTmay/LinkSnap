@@ -15,13 +15,14 @@
 
 4. Benchmark every new architechural decision starting from baseline during optimization. **Done**
 6. Setup Docs(README.md file). 
-7. Reserved link codes such as health 
-8. Project Ends.  
+7. Project Ends.  
 
 ## Issues
  - Unmount the login button in login page.  
  - Blacklist jwt in backend when use logout using redis.  
-
+ - health check endpoint for backend.
+    - wake up backend, redis and postgresdb when they are in sleep mode.
+ - Reserved link codes such as health 
 
 ## Could do in future 
 - Add Mutex to redirect endpoint. 
